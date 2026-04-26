@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriConnect — Farmer Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0A0C0F;--surf:#10131A;--card:#161B24;--card2:#1C2230;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.13);
+  --gold:#C49B4A;--gold-l:#E8D5A0;--gold-d:#7A5E28;--gold-bdr:rgba(196,155,74,.3);--gold-glow:rgba(196,155,74,.08);
+  --acc:#4CAF7D;--acc-d:#1E6B45;--acc-bdr:rgba(76,175,125,.28);--acc-glow:rgba(76,175,125,.09);
+  --cream:#F0EBE0;--m1:rgba(240,235,224,.38);--m2:rgba(240,235,224,.62);
+  --red:#E05A5A;--blue:#5B9BD5;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--cream);min-height:100vh;display:flex;overflow-x:hidden;cursor:none}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.028'/%3E%3C/svg%3E");pointer-events:none;z-index:9990}
+#C{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s}
+#CR{width:30px;height:30px;border:1px solid rgba(196,155,74,.45);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s}
+#C.h{width:14px;height:14px}#CR.h{width:48px;height:48px;border-color:rgba(196,155,74,.8)}
+
+/* SIDEBAR */
+.sb{width:230px;background:var(--surf);border-right:1px solid var(--bdr);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
+.sb::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent)}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--cream)}
+.sb-logo svg{width:30px;height:30px;flex-shrink:0}
+.sb-lt{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;letter-spacing:.02em}
+.sb-ls{font-size:.57rem;color:var(--gold);letter-spacing:.13em;text-transform:uppercase;font-weight:600;margin-top:1px}
+.sb-user{padding:13px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+.sb-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--acc-d),var(--acc));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;border:1.5px solid var(--acc-bdr);flex-shrink:0}
+.sb-nm{font-size:.81rem;font-weight:600;line-height:1.2}
+.sb-rl{font-size:.62rem;color:var(--acc);font-weight:600;letter-spacing:.04em;margin-top:1px}
+.sb-sec{padding:16px 12px 4px;font-size:.56rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--m1)}
+/* KEY FIX: nav items are BUTTONS not anchors */
+.ni{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:8px;margin:1px 7px;cursor:pointer;transition:all .2s;font-size:.8rem;color:var(--m2);font-weight:500;border:1px solid transparent;background:transparent;width:calc(100% - 14px);text-align:left;font-family:'DM Sans',sans-serif;position:relative}
+.ni:hover{background:rgba(255,255,255,.04);color:var(--cream)}
+.ni.on{background:var(--acc-glow);color:var(--acc);border-color:rgba(76,175,125,.18)}
+.ni.on::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:2px;border-radius:0 2px 2px 0;background:var(--acc)}
+.ni-ic{width:15px;text-align:center;font-style:normal;flex-shrink:0}
+.ni-bd{margin-left:auto;background:rgba(76,175,125,.15);color:var(--acc);font-size:.56rem;padding:.1rem .38rem;border-radius:100px;font-weight:700}
+.sb-bot{margin-top:auto;padding:12px;border-top:1px solid var(--bdr)}
+.sc-mini{background:var(--card);border:1px solid var(--gold-bdr);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.rm{position:relative;width:36px;height:36px;flex-shrink:0}
+.rm svg{transform:rotate(-90deg);width:36px;height:36px}
+.rm-v{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;color:var(--acc)}
+.sc-lb{font-size:.76rem;font-weight:600}
+.sc-sb{font-size:.63rem;color:var(--m1)}
+.b-out{display:flex;align-items:center;justify-content:center;gap:7px;padding:8px;border-radius:8px;border:1px solid var(--bdr);background:transparent;color:var(--m2);font-size:.76rem;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif;transition:all .2s}
+.b-out:hover{border-color:var(--red);color:var(--red)}
+
+/* MAIN */
+.main{margin-left:230px;flex:1;min-height:100vh;display:flex;flex-direction:column}
+.topbar{padding:13px 24px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(10,12,15,.92);backdrop-filter:blur(20px);z-index:50}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-bdr),transparent)}
+.pg-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;letter-spacing:.01em}
+.pg-sub{font-size:.69rem;color:var(--m1);margin-top:2px}
+.tb-r{display:flex;align-items:center;gap:9px}
+.wp{background:var(--card);border:1px solid var(--bdr);border-radius:100px;padding:.27rem .82rem;font-size:.71rem;color:var(--m2)}
+.nb{width:32px;height:32px;border-radius:50%;background:var(--card);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.82rem;transition:border-color .2s;position:relative}
+.nb:hover{border-color:var(--gold-bdr)}
+.nd{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--acc);border:1.5px solid var(--bg)}
+
+/* PAGES */
+.pg{display:none;padding:20px;animation:fi .28s ease}
+.pg.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+
+/* KPI */
+.kr{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.kc{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:16px 18px;transition:all .25s;position:relative;overflow:hidden}
+.kc::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent);opacity:0;transition:opacity .3s}
+.kc:hover{border-color:var(--gold-bdr);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.3)}.kc:hover::after{opacity:1}
+.kl{font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--m1);margin-bottom:6px}
+.kv{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;line-height:1}
+.kch{font-size:.69rem;margin-top:5px}
+.up{color:var(--acc)}.dn{color:var(--red)}
+
+/* GRIDS + CARDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.cd{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:18px;transition:border-color .25s}
+.cd:hover{border-color:rgba(255,255,255,.1)}
+.ct{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--m1);margin-bottom:11px;padding-bottom:8px;border-bottom:1px solid var(--bdr)}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.sh h3{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600}
+
+/* TAGS */
+.tag{display:inline-block;font-size:.59rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.17rem .52rem;border-radius:100px}
+.tg{background:rgba(76,175,125,.1);color:var(--acc);border:1px solid rgba(76,175,125,.2)}
+.ta{background:rgba(196,155,74,.1);color:var(--gold);border:1px solid rgba(196,155,74,.2)}
+.tr{background:rgba(224,90,90,.1);color:var(--red);border:1px solid rgba(224,90,90,.2)}
+.tbl{background:rgba(91,155,213,.1);color:var(--blue);border:1px solid rgba(91,155,213,.2)}
+
+/* BUTTONS */
+.btn{padding:.4rem .95rem;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;border:none;display:inline-flex;align-items:center;gap:5px}
+.bg{background:var(--acc-d);color:var(--acc);border:1px solid var(--acc-bdr)}.bg:hover{background:var(--acc);color:var(--bg);transform:translateY(-1px);box-shadow:0 4px 14px rgba(76,175,125,.25)}
+.bo{background:transparent;color:var(--m2);border:1px solid var(--bdr)}.bo:hover{border-color:var(--gold-bdr);color:var(--gold)}
+
+/* TABLE */
+.tbl2{width:100%;border-collapse:collapse;font-size:.8rem}
+.tbl2 th{text-align:left;padding:8px 10px;font-size:.61rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--m1);border-bottom:1px solid var(--bdr)}
+.tbl2 td{padding:10px 10px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--m2)}
+.tbl2 td:first-child{color:var(--cream);font-weight:500}
+.tbl2 tr:last-child td{border-bottom:none}
+.tbl2 tr:hover td{background:rgba(255,255,255,.02)}
+
+/* AI */
+.aitabs{display:flex;gap:5px;margin-bottom:14px;background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:10px;padding:4px}
+.ait{flex:1;padding:.46rem;border:none;background:transparent;border-radius:7px;cursor:pointer;font-size:.76rem;font-weight:600;color:var(--m1);transition:all .2s;font-family:'DM Sans',sans-serif}
+.ait.on{background:var(--acc-glow);color:var(--acc);border:1px solid rgba(76,175,125,.2)}
+.aip{display:none}.aip.on{display:block;animation:fi .28s ease}
+.ar{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:14px;margin-top:10px;font-size:.82rem;line-height:1.75;color:var(--m2);min-height:80px;white-space:pre-wrap}
+.ua{border:1.5px dashed var(--bdr2);border-radius:10px;padding:26px;text-align:center;cursor:pointer;transition:all .2s}
+.ua:hover{border-color:var(--acc);background:var(--acc-glow)}
+.vrow{display:flex;gap:8px;margin-top:10px}
+.vin{flex:1;background:var(--surf);border:1.5px solid var(--bdr);border-radius:8px;padding:.58rem 1rem;color:var(--cream);font-size:.83rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+.vin:focus{border-color:var(--acc)}
+.lpills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.lp{padding:.22rem .66rem;border-radius:100px;font-size:.7rem;font-weight:600;cursor:pointer;border:1px solid var(--bdr);color:var(--m1);transition:all .2s;background:transparent;font-family:'DM Sans',sans-serif}
+.lp.on{background:var(--acc-d);border-color:var(--acc-bdr);color:var(--acc)}
+.cbg{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.cb{padding:.24rem .68rem;border-radius:6px;font-size:.73rem;font-weight:600;cursor:pointer;border:1px solid var(--bdr);color:var(--m1);background:transparent;font-family:'DM Sans',sans-serif;transition:all .2s}
+.cb.on{background:var(--acc-d);border-color:var(--acc-bdr);color:var(--acc)}
+.spk{display:flex;align-items:flex-end;gap:3px;height:52px;margin:10px 0}
+.spkb{flex:1;background:rgba(76,175,125,.2);border-radius:2px 2px 0 0;transition:height .5s}
+.spkb.hi{background:rgba(76,175,125,.5)}.spkb.nw{background:var(--acc)}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px}
+.sz{border-radius:8px;padding:9px;text-align:center;font-size:.71rem;font-weight:600}
+.sz .sv{font-size:1.05rem;font-weight:700;margin-bottom:1px}
+.sz-ok{background:rgba(76,175,125,.08);color:var(--acc);border:1px solid rgba(76,175,125,.16)}
+.sz-dy{background:rgba(196,155,74,.08);color:var(--gold);border:1px solid rgba(196,155,74,.16)}
+.sz-vd{background:rgba(224,90,90,.08);color:var(--red);border:1px solid rgba(224,90,90,.16)}
+.prow{display:flex;align-items:center;gap:10px;background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:11px 14px}
+.tgl{width:40px;height:21px;background:rgba(255,255,255,.1);border-radius:100px;position:relative;cursor:pointer;transition:background .3s;flex-shrink:0;border:none}
+.tgl.on{background:var(--acc)}
+.tgl::after{content:'';position:absolute;top:2.5px;left:2.5px;width:16px;height:16px;border-radius:50%;background:white;transition:transform .3s;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.tgl.on::after{transform:translateX(19px)}
+
+/* SCORE */
+.scb{text-align:center;padding:4px 0 12px}
+.scb svg{width:120px;height:120px;transform:rotate(-90deg)}
+.scc{margin-top:-60px}
+.scv{font-family:'Cormorant Garamond',serif;font-size:2.3rem;font-weight:700;color:var(--acc)}
+.scl{font-size:.63rem;color:var(--m1);letter-spacing:.07em;text-transform:uppercase}
+.srow{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--bdr);font-size:.78rem}
+.srow:last-child{border-bottom:none}
+.sbar{flex:1;height:3px;background:var(--bdr);border-radius:2px}
+.sfil{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--acc-d),var(--acc))}
+
+/* EARNINGS */
+.bc{display:flex;align-items:flex-end;gap:7px;height:105px;margin:8px 0}
+.bcc{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bcb{width:100%;border-radius:4px 4px 0 0;min-height:3px;transition:height .9s cubic-bezier(.23,1,.32,1)}
+.bcv{font-size:.59rem;color:var(--m2);font-weight:600}
+
+/* PROFILE */
+.pf{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:0}
+.fl{font-size:.68rem;font-weight:600;color:var(--m1);letter-spacing:.04em}
+.fi{background:var(--surf);border:1.5px solid var(--bdr);border-radius:8px;padding:.58rem 1rem;color:var(--cream);font-size:.83rem;font-family:'DM Sans',sans-serif;outline:none;transition:all .2s;width:100%}
+.fi:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(76,175,125,.09)}
+
+/* MISC */
+.ac{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:13px;margin-bottom:8px;transition:border-color .2s}
+.ac:hover{border-color:var(--gold-bdr)}
+@media(max-width:900px){.sb{display:none}.main{margin-left:0}.kr{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="C"></div><div id="CR"></div>
+
+<aside class="sb">
+  <a href="../index.html" class="sb-logo">
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="9" fill="#1A2818"/><path d="M20 6 C20 6 10 13 10 22 C10 27.5 14.5 32 20 32 C25.5 32 30 27.5 30 22 C30 13 20 6 20 6Z" fill="#3D8B5E"/><path d="M20 12 C20 12 15 17 15 22 C15 24.8 17.2 27 20 27 C22.8 27 25 24.8 25 22 C25 17 20 12 20 12Z" fill="#7BC8A4"/><path d="M20 16 L20 32" stroke="#1A2818" stroke-width="1.5" stroke-linecap="round"/><path d="M20 21 L16.5 18" stroke="#1A2818" stroke-width="1.3" stroke-linecap="round"/><path d="M20 25 L23.5 22" stroke="#1A2818" stroke-width="1.3" stroke-linecap="round"/></svg>
+    <div><div class="sb-lt">AgriConnect</div><div class="sb-ls">Farmer Portal</div></div>
+  </a>
+  <div class="sb-user">
+    <div class="sb-av" id="uAv">RG</div>
+    <div><div class="sb-nm" id="uNm">Raju Gowda</div><div class="sb-rl">Verified Farmer ✓</div></div>
+  </div>
+  <div class="sb-sec">Navigation</div>
+  <button type="button" class="ni on" id="n-dashboard" onclick="go('dashboard')"><span class="ni-ic">⌂</span>Dashboard</button>
+  <button type="button" class="ni" id="n-mylands" onclick="go('mylands')"><span class="ni-ic">◫</span>My Lands</button>
+  <button type="button" class="ni" id="n-ai" onclick="go('ai')"><span class="ni-ic">✦</span>AI Tools<span class="ni-bd">4</span></button>
+  <button type="button" class="ni" id="n-agriscore" onclick="go('agriscore')"><span class="ni-ic">◈</span>AgriScore™</button>
+  <button type="button" class="ni" id="n-earnings" onclick="go('earnings')"><span class="ni-ic">◉</span>Earnings</button>
+  <button type="button" class="ni" id="n-insurance" onclick="go('insurance')"><span class="ni-ic">◎</span>Insurance</button>
+  <div class="sb-sec">Account</div>
+  <button type="button" class="ni" id="n-profile" onclick="go('profile')"><span class="ni-ic">○</span>My Profile</button>
+  <button type="button" class="ni" id="n-docs" onclick="go('docs')"><span class="ni-ic">□</span>Documents</button>
+  <div class="sb-bot">
+    <div class="sc-mini">
+      <div class="rm">
+        <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="13" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="3.5"/><circle cx="18" cy="18" r="13" fill="none" stroke="#4CAF7D" stroke-width="3.5" stroke-dasharray="81.7" stroke-dashoffset="22" stroke-linecap="round"/></svg>
+        <div class="rm-v">742</div>
+      </div>
+      <div><div class="sc-lb">AgriScore™</div><div class="sc-sb">Good standing</div></div>
+    </div>
+    <button type="button" class="b-out" onclick="logout()">↩ Sign Out</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div><div class="pg-title" id="pgT">Dashboard</div><div class="pg-sub">Saturday, 25 April 2025 · Bengaluru</div></div>
+    <div class="tb-r">
+      <div class="wp">☁ 26°C · Tumkur</div>
+      <div class="nb">🔔<div class="nd"></div></div>
+    </div>
+  </div>
+
+  <!-- ══ DASHBOARD ══ -->
+  <div class="pg on" id="pg-dashboard">
+    <div class="kr">
+      <div class="kc"><div class="kl">Monthly Income</div><div class="kv">₹18,400</div><div class="kch up">↑ 12% vs last month</div></div>
+      <div class="kc"><div class="kl">Active Land</div><div class="kv">4.5 ac</div><div class="kch up">↑ 1 new lease</div></div>
+      <div class="kc"><div class="kl">Crops Delivered</div><div class="kv">2.4 T</div><div class="kch up">↑ 8% this week</div></div>
+      <div class="kc"><div class="kl">AgriScore™</div><div class="kv" style="color:var(--acc)">742</div><div class="kch up">↑ 18 pts this month</div></div>
+    </div>
+    <div class="g2" style="margin-bottom:12px">
+      <div class="cd"><div class="ct">Active Crops</div>
+        <table class="tbl2"><tr><th>Crop</th><th>Plot</th><th>Stage</th><th>Harvest</th></tr>
+          <tr><td>🌽 Maize</td><td>Plot A · 2 ac</td><td><span class="tag tg">Flowering</span></td><td>Jun 12</td></tr>
+          <tr><td>🍅 Tomato</td><td>Plot B · 1.5 ac</td><td><span class="tag ta">Fruiting</span></td><td>May 28</td></tr>
+          <tr><td>🌾 Ragi</td><td>Plot C · 1 ac</td><td><span class="tag tbl">Sowing</span></td><td>Aug 15</td></tr>
+        </table>
+      </div>
+      <div class="cd"><div class="ct">Recent Payments</div>
+        <table class="tbl2"><tr><th>Date</th><th>Type</th><th>Amount</th></tr>
+          <tr><td>Apr 20</td><td>Crop Sale</td><td style="color:var(--acc)">+₹8,200</td></tr>
+          <tr><td>Apr 14</td><td>Lease Income</td><td style="color:var(--acc)">+₹5,500</td></tr>
+          <tr><td>Apr 01</td><td>Bonus</td><td style="color:var(--acc)">+₹1,200</td></tr>
+          <tr><td>Mar 28</td><td>Crop Sale</td><td style="color:var(--acc)">+₹6,800</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="g3">
+      <div class="cd"><div class="ct">Weather Advisory</div><p style="font-size:.82rem;line-height:1.72;color:var(--m2)">☁ Partly cloudy 3 days. Light rain Friday. <strong style="color:var(--gold)">Delay irrigation till Thursday.</strong> Soil moisture optimal in Plot A & B.</p></div>
+      <div class="cd"><div class="ct">Platform Alerts</div><p style="font-size:.81rem;line-height:1.8;color:var(--m2)">✓ Tomato delivery confirmed Apr 18<br>⏳ Maize pick-up scheduled May 3<br>⚠ Insurance renewal due May 15</p></div>
+      <div class="cd"><div class="ct">Quick Actions</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button type="button" class="btn bg" onclick="go('ai')">✦ Ask AI Doctor</button>
+          <button type="button" class="btn bo" onclick="go('earnings')">◉ View Earnings</button>
+          <button type="button" class="btn bo" onclick="go('insurance')">◎ File Insurance</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MY LANDS ══ -->
+  <div class="pg" id="pg-mylands">
+    <div class="kr">
+      <div class="kc"><div class="kl">Total Land</div><div class="kv">4.5 ac</div><div class="kch up">3 active plots</div></div>
+      <div class="kc"><div class="kl">Lease Status</div><div class="kv">Active</div><div class="kch up">Till Dec 2025</div></div>
+      <div class="kc"><div class="kl">Monthly Cost</div><div class="kv">₹6,500</div><div class="kch">lease payment</div></div>
+      <div class="kc"><div class="kl">Soil Health</div><div class="kv" style="color:var(--acc)">Good</div><div class="kch up">tested Apr 10</div></div>
+    </div>
+    <div class="cd" style="margin-bottom:12px">
+      <div class="sh"><h3>My Leased Plots</h3><button type="button" class="btn bo">+ Request Land</button></div>
+      <table class="tbl2"><tr><th>Plot</th><th>Location</th><th>Size</th><th>Landlord</th><th>Term</th><th>Rent/mo</th><th>Status</th></tr>
+        <tr><td>Plot A</td><td>Tumkur Taluk</td><td>2.0 ac</td><td>Vikram Rao</td><td>Jan–Dec 2025</td><td>₹2,800</td><td><span class="tag tg">Active</span></td></tr>
+        <tr><td>Plot B</td><td>Kolar District</td><td>1.5 ac</td><td>Suresh Iyer</td><td>Mar–Sep 2025</td><td>₹2,100</td><td><span class="tag tg">Active</span></td></tr>
+        <tr><td>Plot C</td><td>Ramanagara</td><td>1.0 ac</td><td>Anand Kumar</td><td>Apr–Oct 2025</td><td>₹1,600</td><td><span class="tag tbl">New</span></td></tr>
+      </table>
+    </div>
+    <div class="g2">
+      <div class="cd"><div class="ct">Soil Reports</div>
+        <table class="tbl2"><tr><th>Plot</th><th>pH</th><th>N</th><th>P</th><th>K</th><th>Grade</th></tr>
+          <tr><td>Plot A</td><td>6.8</td><td>Hi</td><td>Med</td><td>Hi</td><td><span class="tag tg">Excellent</span></td></tr>
+          <tr><td>Plot B</td><td>7.1</td><td>Med</td><td>Med</td><td>Lo</td><td><span class="tag ta">Good</span></td></tr>
+          <tr><td>Plot C</td><td>6.5</td><td>Lo</td><td>Hi</td><td>Med</td><td><span class="tag tbl">New</span></td></tr>
+        </table>
+      </div>
+      <div class="cd"><div class="ct">Available Land Matches</div>
+        <div class="ac"><div style="font-weight:600;font-size:.87rem;margin-bottom:3px">3.5 ac — Doddaballapur</div><div style="font-size:.72rem;color:var(--m1);margin-bottom:8px">Verified · Red soil · Borewell · ₹3,200/mo</div><div style="display:flex;gap:7px"><button type="button" class="btn bg">Express Interest</button><button type="button" class="btn bo">Details</button></div></div>
+        <div class="ac"><div style="font-weight:600;font-size:.87rem;margin-bottom:3px">1.8 ac — Tumkur Taluk</div><div style="font-size:.72rem;color:var(--m1);margin-bottom:8px">Verified · Black soil · Drip irrig · ₹1,800/mo</div><div style="display:flex;gap:7px"><button type="button" class="btn bg">Express Interest</button><button type="button" class="btn bo">Details</button></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AI TOOLS ══ -->
+  <div class="pg" id="pg-ai">
+    <div class="aitabs">
+      <button type="button" class="ait on" id="ait-doctor" onclick="swAI('doctor',this)">🩺 Crop Doctor</button>
+      <button type="button" class="ait" id="ait-voice" onclick="swAI('voice',this)">🎙 AgriVoice</button>
+      <button type="button" class="ait" id="ait-market" onclick="swAI('market',this)">📈 Market Pulse</button>
+      <button type="button" class="ait" id="ait-irr" onclick="swAI('irr',this)">💧 Irrigation</button>
+    </div>
+    <div class="aip on" id="aip-doctor">
+      <div class="cd"><div class="ct">AI Crop Doctor — Upload a photo for instant diagnosis</div>
+        <div class="ua" onclick="document.getElementById('cF').click()"><div style="font-size:2rem;margin-bottom:7px">📸</div><p style="font-size:.84rem;color:var(--m2);font-weight:500">Click to upload crop photo</p><p style="font-size:.71rem;color:var(--m1);margin-top:3px">JPG, PNG — max 5MB</p><input type="file" id="cF" accept="image/*" style="display:none" onchange="runDx(event)"></div>
+        <div class="ar" id="dxR">Upload a crop photo — AI diagnoses disease, recommends treatment and estimates severity.</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:10px">
+          <button type="button" class="btn bo" onclick="demoD('blight')">Demo: Tomato Blight</button>
+          <button type="button" class="btn bo" onclick="demoD('rust')">Demo: Maize Rust</button>
+          <button type="button" class="btn bo" onclick="demoD('healthy')">Demo: Healthy Ragi</button>
+        </div>
+      </div>
+    </div>
+    <div class="aip" id="aip-voice">
+      <div class="cd"><div class="ct">AgriVoice — Multilingual AI Farming Assistant</div>
+        <div class="lpills">
+          <button type="button" class="lp on" onclick="setLg(this,'en')">English</button>
+          <button type="button" class="lp" onclick="setLg(this,'kn')">ಕನ್ನಡ</button>
+          <button type="button" class="lp" onclick="setLg(this,'hi')">हिन्दी</button>
+          <button type="button" class="lp" onclick="setLg(this,'ta')">தமிழ்</button>
+          <button type="button" class="lp" onclick="setLg(this,'te')">తెలుగు</button>
+        </div>
+        <div class="ar" id="vR">Ask me anything — weather, sowing time, pest control, market prices, insurance…</div>
+        <div class="vrow"><input class="vin" id="vQ" placeholder="Type your farming question…" onkeydown="if(event.key==='Enter')runV()"><button type="button" class="btn bg" onclick="runV()">Ask →</button></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <button type="button" class="btn bo" style="font-size:.71rem" onclick="qQ('When is the best time to sow tomatoes in Karnataka?')">Sowing time?</button>
+          <button type="button" class="btn bo" style="font-size:.71rem" onclick="qQ('My leaves are turning yellow, what causes this?')">Yellow leaves?</button>
+          <button type="button" class="btn bo" style="font-size:.71rem" onclick="qQ('What is the market price for maize in Tumkur today?')">Maize price?</button>
+        </div>
+      </div>
+    </div>
+    <div class="aip" id="aip-market">
+      <div class="cd"><div class="ct">Market Pulse — 10-Day Price Forecast</div>
+        <div class="cbg">
+          <button type="button" class="cb on" onclick="setCrop(this,'Tomato',20,28)">🍅 Tomato</button>
+          <button type="button" class="cb" onclick="setCrop(this,'Maize',18,22)">🌽 Maize</button>
+          <button type="button" class="cb" onclick="setCrop(this,'Ragi',24,27)">🌾 Ragi</button>
+          <button type="button" class="cb" onclick="setCrop(this,'Onion',15,25)">🧅 Onion</button>
+          <button type="button" class="cb" onclick="setCrop(this,'Cabbage',10,14)">🥬 Cabbage</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:24px;margin:10px 0">
+          <div><div style="font-size:.65rem;color:var(--m1)">Today</div><div id="pNow" style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--acc)">₹20/kg</div></div>
+          <div style="color:var(--m1);font-size:1.3rem">→</div>
+          <div><div style="font-size:.65rem;color:var(--m1)">In 10 days</div><div id="pFut" style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold)">₹28/kg</div></div>
+        </div>
+        <div class="spk" id="spk"></div>
+        <div class="ar" id="pAdv"><strong>AI Recommendation:</strong> Wait 10 days. Price trend shows ₹8/kg gain. You will earn <strong>40% more</strong> per quintal by delaying harvest slightly.</div>
+      </div>
+    </div>
+    <div class="aip" id="aip-irr">
+      <div class="cd"><div class="ct">Smart Irrigation — Live Soil Moisture</div>
+        <p style="font-size:.8rem;color:var(--m2);margin-bottom:12px">4 zone readings — last updated 2 hours ago</p>
+        <div class="sg">
+          <div class="sz sz-ok"><div class="sv">72%</div>North</div>
+          <div class="sz sz-ok"><div class="sv">68%</div>South</div>
+          <div class="sz sz-dy"><div class="sv">41%</div>East</div>
+          <div class="sz sz-vd"><div class="sv">28%</div>West</div>
+        </div>
+        <div class="ar" style="margin-bottom:10px">⚠ <strong>West Zone critically dry (28%).</strong> AI recommends 25-min pump run tonight 7–8pm. East Zone also below optimal — schedule tomorrow morning.</div>
+        <div class="prow"><span style="font-size:.83rem;font-weight:600">Main Pump</span><button type="button" class="tgl" id="pT" onclick="this.classList.toggle('on');document.getElementById('pS').textContent=this.classList.contains('on')?'Running — WhatsApp alert sent ✓':'Off'"></button><span id="pS" style="font-size:.79rem;color:var(--m2)">Off</span><span style="margin-left:auto;font-size:.69rem;color:var(--m1)">WhatsApp alert on toggle</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AGRISCORE ══ -->
+  <div class="pg" id="pg-agriscore">
+    <div class="g2">
+      <div class="cd"><div class="ct">Your AgriScore™</div>
+        <div class="scb"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="48" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="9"/><circle cx="60" cy="60" r="48" fill="none" stroke="#4CAF7D" stroke-width="9" stroke-dasharray="301.6" stroke-dashoffset="81" stroke-linecap="round"/></svg><div class="scc"><div class="scv">742</div><div class="scl">out of 1000</div></div></div>
+        <div style="text-align:center;margin-bottom:14px"><span class="tag tg" style="font-size:.74rem;padding:.3rem .95rem">Good Standing</span></div>
+        <div>
+          <div class="srow"><span style="flex:2;color:var(--m2)">Yield Consistency</span><div class="sbar"><div class="sfil" style="width:82%"></div></div><span>82%</span></div>
+          <div class="srow"><span style="flex:2;color:var(--m2)">Land Care</span><div class="sbar"><div class="sfil" style="width:76%"></div></div><span>76%</span></div>
+          <div class="srow"><span style="flex:2;color:var(--m2)">Platform Behaviour</span><div class="sbar"><div class="sfil" style="width:90%"></div></div><span>90%</span></div>
+          <div class="srow"><span style="flex:2;color:var(--m2)">Payment History</span><div class="sbar"><div class="sfil" style="width:88%"></div></div><span>88%</span></div>
+          <div class="srow"><span style="flex:2;color:var(--m2)">Training</span><div class="sbar"><div class="sfil" style="width:65%"></div></div><span>65%</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="cd"><div class="ct">Unlocked Benefits</div>
+          <div style="display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--bdr)"><span style="color:var(--acc)">✓</span><div><div style="font-size:.82rem;font-weight:600">Microloan Eligible</div><div style="font-size:.69rem;color:var(--m1)">Up to ₹50,000 at 6%</div></div></div>
+            <div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--bdr)"><span style="color:var(--acc)">✓</span><div><div style="font-size:.82rem;font-weight:600">PMFBY Insurance Active</div><div style="font-size:.69rem;color:var(--m1)">₹2L crop coverage</div></div></div>
+            <div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--bdr)"><span style="color:var(--acc)">✓</span><div><div style="font-size:.82rem;font-weight:600">Lease Priority Queue</div><div style="font-size:.69rem;color:var(--m1)">Score &gt;700 first pick</div></div></div>
+            <div style="display:flex;align-items:center;gap:9px;padding:8px 0"><span style="color:var(--m1)">🔒</span><div><div style="font-size:.82rem;font-weight:600;color:var(--m2)">Premium Market Access</div><div style="font-size:.69rem;color:var(--gold)">Requires 800+</div></div></div>
+          </div>
+        </div>
+        <div class="cd"><div class="ct">How to Improve</div>
+          <p style="font-size:.81rem;line-height:1.8;color:var(--m2);margin-bottom:12px">📚 Complete 2 training modules — <strong style="color:var(--gold)">+35 pts</strong><br>📍 Submit land care log — <strong style="color:var(--gold)">+15 pts</strong><br>🌿 Maintain delivery schedule — <strong style="color:var(--gold)">+20 pts</strong></p>
+          <button type="button" class="btn bg">Start Training →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ EARNINGS ══ -->
+  <div class="pg" id="pg-earnings">
+    <div class="kr">
+      <div class="kc"><div class="kl">Total Earned (2025)</div><div class="kv">₹1,12,400</div><div class="kch up">↑ 24% vs 2024</div></div>
+      <div class="kc"><div class="kl">This Month</div><div class="kv">₹18,400</div><div class="kch up">↑ 12% vs March</div></div>
+      <div class="kc"><div class="kl">Pending Payout</div><div class="kv" style="color:var(--gold)">₹8,200</div><div class="kch">Due May 1</div></div>
+      <div class="kc"><div class="kl">Platform Bonuses</div><div class="kv">₹4,600</div><div class="kch up">Loyalty rewards</div></div>
+    </div>
+    <div class="cd" style="margin-bottom:12px">
+      <div class="sh"><h3>Monthly Earnings 2025</h3><button type="button" class="btn bo">Export CSV</button></div>
+      <div class="bc" id="eChart"></div>
+      <div style="display:flex;justify-content:space-around;font-size:.65rem;color:var(--m1);margin-top:3px"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div>
+    </div>
+    <div class="cd"><div class="ct">Payment History</div>
+      <table class="tbl2"><tr><th>Date</th><th>Description</th><th>Crop / Plot</th><th>Amount</th><th>Status</th></tr>
+        <tr><td>Apr 20</td><td>Crop Sale</td><td>Tomato — Plot B</td><td style="color:var(--acc)">+₹8,200</td><td><span class="tag tg">Paid</span></td></tr>
+        <tr><td>Apr 14</td><td>Lease Income</td><td>Plot A</td><td style="color:var(--acc)">+₹5,500</td><td><span class="tag tg">Paid</span></td></tr>
+        <tr><td>Apr 01</td><td>Platform Bonus</td><td>Loyalty</td><td style="color:var(--acc)">+₹1,200</td><td><span class="tag tg">Paid</span></td></tr>
+        <tr><td>Mar 28</td><td>Crop Sale</td><td>Maize — Plot A</td><td style="color:var(--acc)">+₹6,800</td><td><span class="tag tg">Paid</span></td></tr>
+        <tr><td>May 01</td><td>Pending Payout</td><td>Tomato — Plot B</td><td style="color:var(--gold)">+₹8,200</td><td><span class="tag ta">Pending</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ INSURANCE ══ -->
+  <div class="pg" id="pg-insurance">
+    <div class="kr">
+      <div class="kc"><div class="kl">Active Coverage</div><div class="kv" style="color:var(--acc)">₹2,00,000</div><div class="kch up">PMFBY Active</div></div>
+      <div class="kc"><div class="kl">Premium Paid</div><div class="kv">₹1,200</div><div class="kch up">Govt pays 93%</div></div>
+      <div class="kc"><div class="kl">Policy Status</div><div class="kv">Active</div><div class="kch up">Expires May 2026</div></div>
+      <div class="kc"><div class="kl">Claims Filed</div><div class="kv">1</div><div class="kch up">₹18,400 approved</div></div>
+    </div>
+    <div class="g2">
+      <div class="cd"><div class="ct">Active Policies</div>
+        <div class="ac"><div style="font-weight:600;margin-bottom:3px">PMFBY — Kharif Season 2025</div><div style="font-size:.75rem;color:var(--m1);margin-bottom:7px">Coverage ₹2,00,000 · Plots A, B, C · Valid till May 2026</div><span class="tag tg">Active</span></div>
+        <div class="ac" style="margin-top:7px"><div style="font-weight:600;margin-bottom:3px">Parametric Rainfall Insurance</div><div style="font-size:.75rem;color:var(--m1);margin-bottom:7px">&lt;50mm / 30 days · Auto-payout ₹25,000 · Satellite verified</div><span class="tag tbl">Monitoring</span></div>
+      </div>
+      <div class="cd"><div class="ct">File a Claim</div>
+        <p style="font-size:.81rem;color:var(--m2);margin-bottom:13px;line-height:1.65">Auto-file flood/drought claims using geo-tagged photos and satellite data. No inspector needed.</p>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div class="fg"><label class="fl">Damage Type</label><select class="fi" style="cursor:pointer"><option>Flood Damage</option><option>Drought</option><option>Pest Attack</option><option>Hailstorm</option></select></div>
+          <div class="fg"><label class="fl">Affected Plot</label><select class="fi" style="cursor:pointer"><option>Plot A — Tumkur</option><option>Plot B — Kolar</option><option>Plot C — Ramanagara</option></select></div>
+          <button type="button" class="btn bg" style="padding:.7rem;justify-content:center">Auto-File via PMFBY Digiclaim →</button>
+        </div>
+        <p style="font-size:.69rem;color:var(--m1);margin-top:8px">Satellite confirmation triggers payout in 14 days. No field inspector required.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PROFILE ══ -->
+  <div class="pg" id="pg-profile">
+    <div class="cd" style="max-width:580px;margin-bottom:12px"><div class="ct">Personal Information</div>
+      <div class="pf">
+        <div class="fg"><label class="fl">Full Name</label><input class="fi" value="Raju Gowda"></div>
+        <div class="fg"><label class="fl">Mobile</label><input class="fi" value="+91 98441 23456"></div>
+        <div class="fg"><label class="fl">Email</label><input class="fi" value="farmer@agriconnect.in"></div>
+        <div class="fg"><label class="fl">District</label><input class="fi" value="Tumkur, Karnataka"></div>
+        <div class="fg"><label class="fl">Language</label><select class="fi" style="cursor:pointer"><option>Kannada</option><option selected>English</option><option>Hindi</option></select></div>
+        <div class="fg"><label class="fl">Years Farming</label><input class="fi" value="14 years"></div>
+      </div>
+      <button type="button" class="btn bg" style="margin-top:13px;padding:.66rem 1.4rem">Save Changes</button>
+    </div>
+    <div class="cd" style="max-width:580px"><div class="ct">Bank Account (Payouts)</div>
+      <div class="pf">
+        <div class="fg"><label class="fl">Account Holder</label><input class="fi" value="Raju Gowda"></div>
+        <div class="fg"><label class="fl">Bank</label><input class="fi" value="Canara Bank"></div>
+        <div class="fg"><label class="fl">Account No.</label><input class="fi" value="••••••4821" type="password"></div>
+        <div class="fg"><label class="fl">IFSC</label><input class="fi" value="CNRB0003421"></div>
+      </div>
+      <button type="button" class="btn bo" style="margin-top:13px;padding:.66rem 1.4rem">Update Bank Details</button>
+    </div>
+  </div>
+
+  <!-- ══ DOCUMENTS ══ -->
+  <div class="pg" id="pg-docs">
+    <div class="cd"><div class="ct">My Documents</div>
+      <table class="tbl2"><tr><th>Document</th><th>Status</th><th>Uploaded</th><th>Action</th></tr>
+        <tr><td>Aadhaar Card</td><td><span class="tag tg">Verified</span></td><td>Jan 12, 2025</td><td><button type="button" class="btn bo">View</button></td></tr>
+        <tr><td>Land Lease Agreement</td><td><span class="tag tg">Active</span></td><td>Jan 15, 2025</td><td><button type="button" class="btn bo">Download</button></td></tr>
+        <tr><td>PMFBY Certificate</td><td><span class="tag tg">Active</span></td><td>Feb 01, 2025</td><td><button type="button" class="btn bo">Download</button></td></tr>
+        <tr><td>Soil Health Card</td><td><span class="tag tbl">Recent</span></td><td>Apr 10, 2025</td><td><button type="button" class="btn bo">View</button></td></tr>
+        <tr><td>Bank Passbook</td><td><span class="tag ta">Pending</span></td><td>—</td><td><button type="button" class="btn bg">Upload</button></td></tr>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script>
+/* AUTH */
+const u=JSON.parse(sessionStorage.getItem('ac_user')||'null');
+if(u&&u.role==='farmer'){
+  document.getElementById('uNm').textContent=u.name||'Raju Gowda';
+  document.getElementById('uAv').textContent=(u.name||'RG').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+}
+/* CURSOR */
+const C=document.getElementById('C'),CR=document.getElementById('CR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;C.style.left=mx+'px';C.style.top=my+'px'});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;CR.style.left=rx+'px';CR.style.top=ry+'px';requestAnimationFrame(a)})();
+document.querySelectorAll('button,.kc,.cd,.ua,.cb,.lp').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{C.classList.add('h');CR.classList.add('h')});
+  el.addEventListener('mouseleave',()=>{C.classList.remove('h');CR.classList.remove('h')});
+});
+/* NAV — ID-based, button elements, no anchors */
+const TITLES={dashboard:'Dashboard',mylands:'My Lands',ai:'AI Tools',agriscore:'AgriScore™',earnings:'Earnings',insurance:'Insurance',profile:'My Profile',docs:'Documents'};
+function go(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  document.getElementById('n-'+id).classList.add('on');
+  document.getElementById('pgT').textContent=TITLES[id]||id;
+  if(id==='earnings')drawE();
+  if(id==='ai')drawSpk(20,28);
+}
+function logout(){sessionStorage.clear();window.location.href='../index.html'}
+/* AI TABS */
+function swAI(tab,el){
+  document.querySelectorAll('.aip').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ait').forEach(t=>t.classList.remove('on'));
+  document.getElementById('aip-'+tab).classList.add('on');
+  el.classList.add('on');
+  if(tab==='market')drawSpk(20,28);
+}
+/* CROP DOCTOR */
+const DX={
+  blight:'🔴 Diagnosis: Early Blight (Alternaria solani)\nSeverity: Moderate — 35% leaf area affected\n\nTreatment: Apply Mancozeb 75 WP @ 2g/litre foliar spray. Remove lower affected leaves. Avoid overhead irrigation. Re-check in 5 days.\n\nYield impact if untreated: 20–30% loss.',
+  rust:'🟡 Diagnosis: Common Rust (Puccinia sorghi)\nSeverity: Early — 15% leaf affected\n\nTreatment: Propiconazole 25 EC @ 1ml/litre at 14-day intervals. Ensure good row spacing. No immediate yield risk if treated now.',
+  healthy:'✅ Crop Healthy — No disease detected\n\nLeaves uniform and green. No lesion or necrosis visible. Crop in excellent condition.\n\nContinue current practices. Next assessment due in 10 days.'
+};
+function demoD(k){
+  const el=document.getElementById('dxR');
+  el.style.color='var(--m1)';el.textContent='Analysing…';
+  setTimeout(()=>{el.style.color='var(--m2)';el.textContent=DX[k]},1500);
+}
+function runDx(e){
+  if(!e.target.files[0])return;
+  const el=document.getElementById('dxR');
+  el.style.color='var(--m1)';el.textContent='Analysing crop image…';
+  setTimeout(()=>{el.style.color='var(--m2)';el.textContent='🔴 Leaf Curl Disease detected.\nSeverity: Moderate\n\nRemove infected plants. Apply Neem oil 3ml/litre. Check irrigation water pH 6.0–7.0.'},2000);
+}
+/* AGRIVOICE */
+let lg='en';
+const SQ={en:'When is the best time to sow tomatoes in Karnataka?',kn:'ಕರ್ನಾಟಕದಲ್ಲಿ ಟೊಮ್ಯಾಟೊ ಬಿತ್ತಲು ಯಾವಾಗ?',hi:'टमाटर बोने का सही समय?',ta:'தக்காளி விதைக்க?',te:'టమాటాలు నాటడానికి?'};
+function setLg(el,l){document.querySelectorAll('.lp').forEach(p=>p.classList.remove('on'));el.classList.add('on');lg=l;document.getElementById('vQ').placeholder=SQ[l]||'Ask your farming question…'}
+function qQ(q){document.getElementById('vQ').value=q;runV()}
+async function runV(){
+  const q=document.getElementById('vQ').value.trim();if(!q)return;
+  const el=document.getElementById('vR');
+  el.style.color='var(--m1)';el.textContent='Thinking…';
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:350,system:'You are AgriVoice, multilingual AI assistant for Indian farmers on AgriConnect. Reply in the same language the user writes. Be warm, practical, concise. Cover crops, weather, pests, soil, prices, insurance.',messages:[{role:'user',content:q}]})});
+    const d=await r.json();
+    el.style.color='var(--m2)';el.textContent=d.content?.[0]?.text||'—';
+  }catch{
+    el.style.color='var(--m2)';
+    el.textContent='The best time to sow tomatoes in Karnataka is June–July (Kharif) and October–November (Rabi). Ensure soil temp is 18–24°C with adequate moisture before sowing.';
+  }
+}
+/* MARKET PULSE */
+function setCrop(el,n,now,fut){
+  document.querySelectorAll('.cb').forEach(b=>b.classList.remove('on'));el.classList.add('on');
+  document.getElementById('pNow').textContent='₹'+now+'/kg';
+  document.getElementById('pFut').textContent='₹'+fut+'/kg';
+  const pct=Math.round((fut-now)/now*100);
+  document.getElementById('pAdv').innerHTML=pct>15?`<strong>AI Recommendation:</strong> Wait ${Math.ceil(pct/2)} days. Price trend shows ₹${fut-now}/kg gain. You will earn <strong>${pct}% more</strong> per quintal by delaying harvest slightly.`:`<strong>AI Recommendation:</strong> Sell now — price expected to stabilize. Current price of ₹${now}/kg is fair for the season.`;
+  drawSpk(now,fut);
+}
+function drawSpk(lo,hi){
+  const w=document.getElementById('spk');if(!w)return;w.innerHTML='';
+  const vs=[lo,lo*1.05,lo*.98,lo*1.1,lo*1.08,lo*1.14,hi*.92,hi*.96,hi,hi*1.02];
+  const mx=Math.max(...vs);
+  vs.forEach((v,i)=>{const b=document.createElement('div');b.className='spkb'+(i===vs.length-1?' nw':v===mx?' hi':'');b.style.height=Math.round(v/mx*100)+'%';w.appendChild(b)});
+}
+/* EARNINGS */
+function drawE(){
+  const w=document.getElementById('eChart');if(!w)return;
+  const data=[12400,15200,11800,18400,0,0],mx=Math.max(...data);w.innerHTML='';
+  data.forEach((v,i)=>{
+    const col=document.createElement('div');col.className='bcc';
+    const bar=document.createElement('div');bar.className='bcb';
+    bar.style.background=i===3?'var(--acc)':'rgba(76,175,125,.2)';bar.style.height='3px';
+    const lbl=document.createElement('div');lbl.className='bcv';lbl.textContent=v?'₹'+Math.round(v/1000)+'K':'';
+    col.appendChild(bar);col.appendChild(lbl);w.appendChild(col);
+    setTimeout(()=>{bar.style.height=v?Math.round(v/mx*100)+'%':'3px'},80+i*60);
+  });
+}
+drawSpk(20,28);
+</script>
+</body>
+</html>

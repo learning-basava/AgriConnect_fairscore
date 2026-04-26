@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriConnect — From Soil to Soul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+:root{
+  --bg:#0A0C0F;--surf:#10131A;--card:#161B24;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.13);
+  --gold:#C49B4A;--gold-l:#E8D5A0;--gold-d:#7A5E28;
+  --gold-bdr:rgba(196,155,74,.3);--gold-glow:rgba(196,155,74,.08);
+  --green:#4CAF7D;--green-d:#1E6B45;--green-bdr:rgba(76,175,125,.3);
+  --cream:#F0EBE0;--m1:rgba(240,235,224,.4);--m2:rgba(240,235,224,.65);
+  --red:#E05A5A;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--cream);overflow-x:hidden;cursor:none}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.028'/%3E%3C/svg%3E");pointer-events:none;z-index:9990}
+#C{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s}
+#CR{width:30px;height:30px;border:1px solid rgba(196,155,74,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s}
+#C.h{width:14px;height:14px;background:var(--gold-l)}#CR.h{width:48px;height:48px;border-color:rgba(196,155,74,.8)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5vw;height:66px;display:flex;align-items:center;justify-content:space-between;transition:background .4s,border-color .4s}
+nav.s{background:rgba(10,12,15,.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr)}
+nav.s::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-bdr),transparent)}
+.nl{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--cream)}
+.nl svg{width:34px;height:34px;flex-shrink:0}
+.nl-t{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;letter-spacing:.02em}
+.nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+.nav-links a{text-decoration:none;font-size:.84rem;color:var(--m2);font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{background:var(--gold-d)!important;color:var(--gold-l)!important;padding:.46rem 1.2rem!important;border-radius:7px!important;border:1px solid var(--gold-bdr)!important;font-weight:600!important;transition:all .2s!important}
+.nav-cta:hover{background:var(--gold)!important;color:var(--bg)!important;transform:translateY(-1px)!important;box-shadow:0 4px 16px rgba(196,155,74,.3)!important}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:100px 5vw 60px;position:relative;overflow:hidden}
+.hero-glow1{position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(196,155,74,.07),transparent 70%);top:-100px;right:-80px;pointer-events:none}
+.hero-glow2{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(76,175,125,.05),transparent 70%);bottom:-80px;left:-100px;pointer-events:none}
+.hero-inner{max-width:1200px;width:100%;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--m1);margin-bottom:1.5rem;padding:.35rem .9rem;background:rgba(196,155,74,.07);border:1px solid var(--gold-bdr);border-radius:100px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(76,175,125,.2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(76,175,125,.2)}50%{box-shadow:0 0 0 6px rgba(76,175,125,0)}}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,5vw,4.4rem);line-height:1.08;font-weight:700;margin-bottom:1.2rem}
+.hero-title em{color:var(--gold);font-style:italic}
+.hero-sub{font-size:1rem;line-height:1.78;color:var(--m2);max-width:480px;margin-bottom:2rem}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:2.5rem}
+.btn-gold{background:var(--gold-d);color:var(--gold-l);padding:.82rem 2rem;border-radius:8px;font-weight:600;font-size:.88rem;text-decoration:none;border:1px solid var(--gold-bdr);cursor:pointer;transition:all .2s;display:inline-block}
+.btn-gold:hover{background:var(--gold);color:var(--bg);transform:translateY(-2px);box-shadow:0 8px 24px rgba(196,155,74,.25)}
+.btn-ghost{border:1px solid var(--bdr2);color:var(--m2);padding:.82rem 2rem;border-radius:8px;font-weight:500;font-size:.88rem;text-decoration:none;cursor:pointer;background:transparent;transition:all .2s;display:inline-block}
+.btn-ghost:hover{border-color:var(--gold-bdr);color:var(--gold);transform:translateY(-2px)}
+.hero-stats{display:flex;gap:2.5rem}
+.stat-v{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;line-height:1}
+.stat-l{font-size:.72rem;color:var(--m1);letter-spacing:.04em;margin-top:4px}
+
+/* PORTAL CARDS */
+.portal-stack{display:flex;flex-direction:column;gap:12px}
+.portal-stack-label{font-size:.62rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--m1);margin-bottom:5px}
+.pc{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:18px 20px;text-decoration:none;color:inherit;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;transition:all .25s;cursor:pointer}
+.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent);opacity:0;transition:opacity .3s}
+.pc:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4);border-color:var(--gold-bdr)}
+.pc:hover::before{opacity:1}
+.pc-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.35rem}
+.ic-farmer{background:linear-gradient(135deg,#1E3D2A,#2D6B45)}
+.ic-land{background:linear-gradient(135deg,#3D2A0A,#6B4A1E)}
+.ic-market{background:linear-gradient(135deg,#1A1E2A,#2E3650)}
+.ic-admin{background:linear-gradient(135deg,#2A1A3D,#4A2E6B)}
+.pc-info{}
+.pc-title{font-weight:600;font-size:.9rem;margin-bottom:2px}
+.pc-desc{font-size:.74rem;color:var(--m1)}
+.pc-badge{font-size:.6rem;padding:.16rem .48rem;border-radius:100px;font-weight:700;letter-spacing:.05em;margin-left:7px}
+.badge-live{background:rgba(76,175,125,.12);color:var(--green);border:1px solid rgba(76,175,125,.25)}
+.badge-beta{background:rgba(196,155,74,.12);color:var(--gold);border:1px solid rgba(196,155,74,.25)}
+.pc-arrow{margin-left:auto;color:var(--m1);transition:transform .25s,color .25s}
+.pc:hover .pc-arrow{transform:translateX(4px);color:var(--gold)}
+
+/* MARQUEE */
+.marquee{padding:16px 0;background:var(--surf);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);overflow:hidden;position:relative}
+.marquee::before,.marquee::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
+.marquee::before{left:0;background:linear-gradient(to right,var(--surf),transparent)}
+.marquee::after{right:0;background:linear-gradient(to left,var(--surf),transparent)}
+.mq-track{display:flex;width:max-content;animation:mq 30s linear infinite}
+@keyframes mq{to{transform:translateX(-50%)}}
+.mq-item{white-space:nowrap;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--m1);padding:0 2.5rem;font-weight:500}
+.mq-item span{color:var(--gold);margin-right:.5rem}
+
+/* SECTIONS */
+.section{padding:96px 5vw;max-width:1200px;margin:0 auto}
+.s-label{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem}
+.s-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,2.8rem);font-weight:700;line-height:1.15;margin-bottom:.9rem}
+.s-sub{font-size:.95rem;line-height:1.75;color:var(--m2);max-width:540px}
+
+/* PILLARS */
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:52px}
+.pillar{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:28px;transition:all .25s;position:relative;overflow:hidden}
+.pillar::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent);opacity:0;transition:opacity .3s}
+.pillar:hover{border-color:var(--gold-bdr);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.35)}.pillar:hover::after{opacity:1}
+.p-num{font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:700;color:rgba(196,155,74,.12);line-height:1;margin-bottom:14px}
+.p-tag{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.22rem .65rem;border-radius:100px;margin-bottom:10px}
+.pt1{background:rgba(76,175,125,.1);color:var(--green);border:1px solid rgba(76,175,125,.2)}
+.pt2{background:rgba(196,155,74,.1);color:var(--gold);border:1px solid rgba(196,155,74,.2)}
+.pt3{background:rgba(240,235,224,.06);color:var(--m2);border:1px solid var(--bdr)}
+.p-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;margin-bottom:.7rem}
+.p-desc{font-size:.85rem;line-height:1.72;color:var(--m2)}
+.p-earn{margin-top:14px;font-size:.76rem;font-weight:600;color:var(--gold)}
+
+/* IMPACT */
+.impact{background:var(--surf);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);padding:80px 5vw}
+.impact-inner{max-width:1200px;margin:0 auto}
+.impact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:48px}
+.i-num{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:700;color:var(--gold)}
+.i-lbl{font-size:.82rem;color:var(--m1);margin-top:5px;line-height:1.5}
+
+/* INNOVATIONS */
+.innov-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:48px}
+.innov{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:24px;display:flex;gap:14px;transition:all .25s}
+.innov:hover{border-color:var(--gold-bdr);transform:translateY(-3px)}
+.innov-icon{width:42px;height:42px;border-radius:10px;background:var(--surf);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.innov-title{font-weight:700;font-size:.92rem;margin-bottom:6px}
+.innov-desc{font-size:.81rem;line-height:1.68;color:var(--m2)}
+
+/* FOOTER */
+footer{background:var(--surf);border-top:1px solid var(--bdr);padding:64px 5vw 32px}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.f-brand{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;margin-bottom:10px}
+.f-sub{font-size:.81rem;color:var(--m1);line-height:1.7;max-width:280px}
+.f-col-title{font-size:.62rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--m1);margin-bottom:14px}
+.f-links{list-style:none}
+.f-links li{margin-bottom:8px}
+.f-links a{text-decoration:none;font-size:.83rem;color:var(--m2);transition:color .2s}
+.f-links a:hover{color:var(--gold)}
+.f-bottom{border-top:1px solid var(--bdr);padding-top:24px;display:flex;justify-content:space-between;align-items:center}
+.f-copy{font-size:.75rem;color:var(--m1)}
+.f-soul{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:rgba(196,155,74,.6)}
+
+/* LOGIN MODAL */
+.overlay{position:fixed;inset:0;background:rgba(10,12,15,.75);backdrop-filter:blur(10px);z-index:2000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--card);border:1px solid var(--gold-bdr);border-radius:20px;width:420px;max-width:92vw;overflow:hidden;transform:translateY(20px) scale(.97);transition:transform .3s}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent)}
+.overlay.open .modal{transform:translateY(0) scale(1)}
+.modal{position:relative}
+.mh{padding:26px 28px 0;display:flex;justify-content:space-between;align-items:flex-start}
+.m-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600}
+.m-sub{font-size:.78rem;color:var(--m1);margin-top:3px}
+.m-close{width:30px;height:30px;border-radius:50%;border:1px solid var(--bdr);background:transparent;cursor:pointer;color:var(--m2);font-size:1rem;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.m-close:hover{border-color:var(--red);color:var(--red)}
+.mb{padding:24px 28px 28px}
+.ptabs{display:flex;gap:5px;margin-bottom:20px;background:rgba(255,255,255,.04);border-radius:9px;padding:4px;border:1px solid var(--bdr)}
+.ptab{flex:1;padding:.5rem;border:none;background:transparent;border-radius:7px;cursor:pointer;font-size:.77rem;font-weight:600;color:var(--m1);transition:all .2s;font-family:'DM Sans',sans-serif}
+.ptab.on{background:var(--gold-d);color:var(--gold-l);border:1px solid var(--gold-bdr)}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+.fl{font-size:.7rem;font-weight:600;color:var(--m1);letter-spacing:.05em}
+.fi{background:var(--surf);border:1.5px solid var(--bdr);border-radius:8px;padding:.62rem 1rem;color:var(--cream);font-size:.86rem;font-family:'DM Sans',sans-serif;outline:none;transition:all .2s;width:100%}
+.fi:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(196,155,74,.1)}
+.login-btn{width:100%;padding:.88rem;background:var(--gold-d);color:var(--gold-l);border:1px solid var(--gold-bdr);border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;margin-top:5px}
+.login-btn:hover{background:var(--gold);color:var(--bg);transform:translateY(-1px);box-shadow:0 6px 20px rgba(196,155,74,.3)}
+.demo-box{background:rgba(196,155,74,.06);border:1px solid var(--gold-bdr);border-radius:10px;padding:13px;margin-top:14px}
+.demo-title{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:7px}
+.demo-row{display:flex;justify-content:space-between;font-size:.78rem;color:var(--m2);margin-bottom:3px}
+.demo-row span:last-child{font-weight:600;color:var(--cream);font-family:monospace;font-size:.8rem}
+.login-err{background:rgba(224,90,90,.08);border:1px solid rgba(224,90,90,.25);border-radius:7px;padding:9px 13px;font-size:.8rem;color:var(--red);margin-bottom:11px;display:none}
+.login-err.show{display:block}
+
+/* FADE-UP */
+.fu{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.fu.vis{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+@media(max-width:900px){.hero-inner,.pillars,.impact-grid,.innov-grid,.footer-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+<div id="C"></div><div id="CR"></div>
+
+<nav id="nav">
+  <a href="index.html" class="nl">
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="9" fill="#1A2818"/><path d="M20 6 C20 6 10 13 10 22 C10 27.5 14.5 32 20 32 C25.5 32 30 27.5 30 22 C30 13 20 6 20 6Z" fill="#3D8B5E"/><path d="M20 12 C20 12 15 17 15 22 C15 24.8 17.2 27 20 27 C22.8 27 25 24.8 25 22 C25 17 20 12 20 12Z" fill="#7BC8A4"/><path d="M20 16 L20 32" stroke="#1A2818" stroke-width="1.5" stroke-linecap="round"/><path d="M20 21 L16.5 18" stroke="#1A2818" stroke-width="1.3" stroke-linecap="round"/><path d="M20 25 L23.5 22" stroke="#1A2818" stroke-width="1.3" stroke-linecap="round"/></svg>
+    <div class="nl-t">AgriConnect</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#pillars">How It Works</a></li>
+    <li><a href="#innovations">Innovations</a></li>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#" onclick="openLogin(event)" class="nav-cta">Sign In</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-glow1"></div><div class="hero-glow2"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow"><span class="live-dot"></span>Soil to Soul · Zero Brokers · Karnataka</div>
+      <h1 class="hero-title fu">India's First<br>Farm-to-Table<br><em>Ecosystem.</em></h1>
+      <p class="hero-sub fu d1">Land Exchange. Direct Marketplace. Agri Partnership. Three pillars. One platform. No brokers. No inflation. No injustice.</p>
+      <div class="hero-btns fu d2">
+        <a href="#" onclick="openLogin(event)" class="btn-gold">Access Platform →</a>
+        <a href="#pillars" class="btn-ghost">How It Works</a>
+      </div>
+      <div class="hero-stats fu d3">
+        <div><div class="stat-v">3,200+</div><div class="stat-l">Farmers onboarded</div></div>
+        <div><div class="stat-v">₹15L Cr</div><div class="stat-l">Market opportunity</div></div>
+        <div><div class="stat-v">0</div><div class="stat-l">Brokers in chain</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="portal-stack-label">Platform Portals</div>
+      <div class="portal-stack">
+        <div class="pc fu d1" onclick="openFor('farmer')">
+          <div class="pc-icon ic-farmer">🌾</div>
+          <div class="pc-info"><div class="pc-title">Farmer Portal<span class="pc-badge badge-live">Live</span></div><div class="pc-desc">Land access, AI tools, AgriScore, markets</div></div>
+          <div class="pc-arrow">→</div>
+        </div>
+        <div class="pc fu d2" onclick="openFor('landlord')">
+          <div class="pc-icon ic-land">🏡</div>
+          <div class="pc-info"><div class="pc-title">Landlord Portal<span class="pc-badge badge-live">Live</span></div><div class="pc-desc">List land, track earnings, manage leases</div></div>
+          <div class="pc-arrow">→</div>
+        </div>
+        <div class="pc fu d3" onclick="openFor('marketplace')">
+          <div class="pc-icon ic-market">🛒</div>
+          <div class="pc-info"><div class="pc-title">Marketplace<span class="pc-badge badge-beta">Beta</span></div><div class="pc-desc">Farm-fresh produce, QR-traced, zero markup</div></div>
+          <div class="pc-arrow">→</div>
+        </div>
+        <div class="pc fu d4" onclick="openFor('admin')">
+          <div class="pc-icon ic-admin">⚙️</div>
+          <div class="pc-info"><div class="pc-title">Admin Panel<span class="pc-badge badge-live">Live</span></div><div class="pc-desc">Platform ops, approvals, analytics</div></div>
+          <div class="pc-arrow">→</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee">
+  <div class="mq-track">
+    <span class="mq-item"><span>◆</span>Zero Brokers</span><span class="mq-item"><span>◆</span>Land Exchange Platform</span><span class="mq-item"><span>◆</span>Direct Farm-to-Table</span><span class="mq-item"><span>◆</span>AgriScore™ Credit Rating</span><span class="mq-item"><span>◆</span>Price Stability Engine</span><span class="mq-item"><span>◆</span>Vernacular AI · Kannada · Hindi · Tamil · Telugu</span><span class="mq-item"><span>◆</span>QR Organic Certification</span><span class="mq-item"><span>◆</span>Farmer Dignity First</span>
+    <span class="mq-item"><span>◆</span>Zero Brokers</span><span class="mq-item"><span>◆</span>Land Exchange Platform</span><span class="mq-item"><span>◆</span>Direct Farm-to-Table</span><span class="mq-item"><span>◆</span>AgriScore™ Credit Rating</span><span class="mq-item"><span>◆</span>Price Stability Engine</span><span class="mq-item"><span>◆</span>Vernacular AI · Kannada · Hindi · Tamil · Telugu</span><span class="mq-item"><span>◆</span>QR Organic Certification</span><span class="mq-item"><span>◆</span>Farmer Dignity First</span>
+  </div>
+</div>
+
+<div style="padding:96px 0" id="pillars">
+  <div class="section" style="padding-top:0;padding-bottom:0">
+    <div class="s-label fu">The Three Pillars</div>
+    <h2 class="s-title fu d1">One ecosystem.<br>Three engines of change.</h2>
+    <p class="s-sub fu d2">Every pillar feeds the next. Land produces crops for the store. Large farms supply the same market. One closed loop — no leakage, no brokers.</p>
+    <div class="pillars">
+      <div class="pillar fu d1"><div class="p-num">01</div><span class="p-tag pt1">Land Exchange</span><div class="p-title">Idle land.<br>Active farms.</div><p class="p-desc">Urban landowners with idle farmland match with verified farmers. Monthly or long-term leases. Trained workers included. Full legal documentation handled.</p><div class="p-earn">AgriConnect earns: 8–12% commission</div></div>
+      <div class="pillar fu d2"><div class="p-num">02</div><span class="p-tag pt2">Direct Marketplace</span><div class="p-title">Farm to table.<br>Zero brokers.</div><p class="p-desc">Farmers bring produce directly to AgriConnect stores. Reaches restaurants, hotels, and consumers. Cost-plus pricing — no inflation, no crashes. The farmer always wins.</p><div class="p-earn">AgriConnect earns: 15–18% store margin</div></div>
+      <div class="pillar fu d3"><div class="p-num">03</div><span class="p-tag pt3">Agri Partnership</span><div class="p-title">Own land.<br>No resources?</div><p class="p-desc">For farmers with large land but no capital, AgriConnect deploys technology and trained workers. Farmer earns monthly salary or profit split on final crop value.</p><div class="p-earn">AgriConnect earns: 20% crop value split</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="impact" id="impact">
+  <div class="impact-inner">
+    <div class="s-label fu" style="color:rgba(196,155,74,.8)">Platform Impact</div>
+    <h2 class="s-title fu d1">Numbers that matter.</h2>
+    <div class="impact-grid">
+      <div class="fu d1"><div class="i-num" id="c1">0</div><div class="i-lbl">Farmers empowered across Karnataka</div></div>
+      <div class="fu d2"><div class="i-num" id="c2">0</div><div class="i-lbl">Acres of idle land activated</div></div>
+      <div class="fu d3"><div class="i-num" id="c3">0</div><div class="i-lbl">Brokers removed from supply chain</div></div>
+      <div class="fu d4"><div class="i-num" id="c4">0%</div><div class="i-lbl">Average income increase per farmer</div></div>
+    </div>
+  </div>
+</div>
+
+<div style="padding:96px 0" id="innovations">
+  <div class="section" style="padding-top:0;padding-bottom:0">
+    <div class="s-label fu">5 Unique Innovations</div>
+    <h2 class="s-title fu d1">Built to last.<br>Not just to launch.</h2>
+    <div class="innov-grid">
+      <div class="innov fu d1"><div class="innov-icon">🏆</div><div><div class="innov-title">AgriScore™</div><p class="innov-desc">Proprietary farmer credit rating from yield history, land care, and platform behaviour. Unlocks microloans, insurance, and lease priority.</p></div></div>
+      <div class="innov fu d2"><div class="innov-icon">⚖️</div><div><div class="innov-title">Price Stability Engine</div><p class="innov-desc">Cost-plus pricing model requiring both supply and distribution. No competitor has this — no farmer suffers a price crash ever again.</p></div></div>
+      <div class="innov fu d1"><div class="innov-icon">🎙️</div><div><div class="innov-title">Vernacular AI App</div><p class="innov-desc">Voice-first AI in Kannada, Hindi, Tamil, and Telugu for low-literacy farmers. Ask about weather, sowing, pests — in your mother tongue.</p></div></div>
+      <div class="innov fu d2"><div class="innov-icon">📱</div><div><div class="innov-title">QR Organic Certification</div><p class="innov-desc">Every batch QR-coded with farm origin, farmer photo, soil report, zero-chemical pledge. Consumers know exactly who grew their food.</p></div></div>
+      <div class="innov fu d1"><div class="innov-icon">🍽️</div><div><div class="innov-title">AgriConnect Kitchens</div><p class="innov-desc">B2B SaaS for restaurants at locked-in weekly prices. Predictable procurement. Zero price surprises. Zero brokers.</p></div></div>
+      <div class="innov fu d2"><div class="innov-icon">🛡️</div><div><div class="innov-title">PMFBY Digiclaim</div><p class="innov-desc">Farmers auto-file flood claims via the app. Satellite confirms → auto payout in 2 weeks. No inspector. No wait. No loss of dignity.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="f-brand">AgriConnect</div>
+        <p class="f-sub">Building India's first integrated farm-to-table ecosystem — connecting idle land, landless farmers, and urban consumers in one closed loop.</p>
+      </div>
+      <div><div class="f-col-title">Platform</div><ul class="f-links"><li><a href="#" onclick="openFor('farmer')">Farmer Portal</a></li><li><a href="#" onclick="openFor('landlord')">Landlord Portal</a></li><li><a href="#" onclick="openFor('marketplace')">Marketplace</a></li><li><a href="#" onclick="openFor('admin')">Admin Panel</a></li></ul></div>
+      <div><div class="f-col-title">Company</div><ul class="f-links"><li><a href="#">About Us</a></li><li><a href="#">Our Farmers</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li></ul></div>
+      <div><div class="f-col-title">Legal</div><ul class="f-links"><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li><li><a href="#">FSSAI License</a></li><li><a href="#">Contact</a></li></ul></div>
+    </div>
+    <div class="f-bottom">
+      <div class="f-copy">© 2025 AgriConnect Pvt. Ltd. Bengaluru, Karnataka.</div>
+      <div class="f-soul">From Soil to Soul</div>
+    </div>
+  </div>
+</footer>
+
+<!-- LOGIN MODAL -->
+<div class="overlay" id="loginOverlay">
+  <div class="modal">
+    <div class="mh">
+      <div><div class="m-title">Welcome Back</div><div class="m-sub">Sign in to your AgriConnect account</div></div>
+      <button type="button" class="m-close" onclick="closeLogin()">✕</button>
+    </div>
+    <div class="mb">
+      <div class="ptabs">
+        <button type="button" class="ptab on" id="tab-farmer" onclick="switchTab('farmer')">🌾 Farmer</button>
+        <button type="button" class="ptab" id="tab-landlord" onclick="switchTab('landlord')">🏡 Landlord</button>
+        <button type="button" class="ptab" id="tab-marketplace" onclick="switchTab('marketplace')">🛒 Buyer</button>
+        <button type="button" class="ptab" id="tab-admin" onclick="switchTab('admin')">⚙️ Admin</button>
+      </div>
+      <div class="login-err" id="loginErr">Invalid credentials. Please check and try again.</div>
+      <div class="fg"><label class="fl">Email Address</label><input type="email" class="fi" id="loginEmail" placeholder="your@email.com"></div>
+      <div class="fg"><label class="fl">Password</label><input type="password" class="fi" id="loginPass" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button type="button" class="login-btn" onclick="doLogin()">Sign In →</button>
+      <div class="demo-box">
+        <div class="demo-title">Demo Credentials</div>
+        <div id="demoCreds"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* CURSOR */
+const C=document.getElementById('C'),CR=document.getElementById('CR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;C.style.left=mx+'px';C.style.top=my+'px'});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;CR.style.left=rx+'px';CR.style.top=ry+'px';requestAnimationFrame(a)})();
+document.querySelectorAll('a,button,.pc,.pillar,.innov,.nav-cta').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{C.classList.add('h');CR.classList.add('h')});
+  el.addEventListener('mouseleave',()=>{C.classList.remove('h');CR.classList.remove('h')});
+});
+/* NAV SCROLL */
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('s',scrollY>40));
+/* FADE UP */
+new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');}}),{threshold:.1}).observe(document.body);
+document.querySelectorAll('.fu').forEach(el=>new IntersectionObserver(([e])=>{if(e.isIntersecting)el.classList.add('vis')},{threshold:.1}).observe(el));
+/* COUNT UP */
+function countUp(id,target,suffix='',dur=2000){
+  const el=document.getElementById(id);if(!el)return;
+  const start=performance.now();
+  (function f(t){
+    const p=Math.min((t-start)/dur,1),ease=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+    el.textContent=Math.round(ease*target).toLocaleString('en-IN')+suffix;
+    if(p<1)requestAnimationFrame(f);
+  })(performance.now());
+}
+new IntersectionObserver(([e])=>{if(e.isIntersecting){countUp('c1',3247);countUp('c2',1840);countUp('c3',12000);countUp('c4',68,'%');}},{threshold:.3}).observe(document.querySelector('.impact'));
+
+/* AUTH CREDENTIALS */
+const CREDS={
+  farmer:{email:'farmer@agriconnect.in',pass:'Farmer@123',name:'Raju Gowda',redirect:'farmer/index.html'},
+  landlord:{email:'landlord@agriconnect.in',pass:'Land@123',name:'Vikram Rao',redirect:'landlord/index.html'},
+  marketplace:{email:'buyer@agriconnect.in',pass:'Market@123',name:'Priya Sharma',redirect:'marketplace/index.html'},
+  admin:{email:'admin@agriconnect.in',pass:'Admin@2025',name:'AgriConnect Admin',redirect:'admin/index.html'},
+};
+let activeTab='farmer';
+function switchTab(t){
+  activeTab=t;
+  document.querySelectorAll('.ptab').forEach(p=>p.classList.remove('on'));
+  document.getElementById('tab-'+t).classList.add('on');
+  const c=CREDS[t];
+  document.getElementById('demoCreds').innerHTML=`<div class="demo-row"><span>Email</span><span>${c.email}</span></div><div class="demo-row"><span>Password</span><span>${c.pass}</span></div>`;
+  document.getElementById('loginEmail').value='';document.getElementById('loginPass').value='';
+  document.getElementById('loginErr').classList.remove('show');
+}
+function openLogin(e){e&&e.preventDefault();document.getElementById('loginOverlay').classList.add('open');switchTab('farmer')}
+function openFor(tab){document.getElementById('loginOverlay').classList.add('open');switchTab(tab)}
+function closeLogin(){document.getElementById('loginOverlay').classList.remove('open')}
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value.trim();
+  const c=CREDS[activeTab];
+  if(email===c.email&&pass===c.pass){
+    sessionStorage.setItem('ac_user',JSON.stringify({role:activeTab,name:c.name}));
+    window.location.href=c.redirect;
+  }else{
+    document.getElementById('loginErr').classList.add('show');
+  }
+}
+document.getElementById('loginOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('loginOverlay'))closeLogin()});
+switchTab('farmer');
+</script>
+</body>
+</html>

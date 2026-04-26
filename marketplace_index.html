@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriConnect — Marketplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0A0C0F;--surf:#10131A;--card:#161B24;--card2:#1C2230;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.13);
+  --gold:#C49B4A;--gold-l:#E8D5A0;--gold-d:#7A5E28;--gold-bdr:rgba(196,155,74,.3);--gold-glow:rgba(196,155,74,.08);
+  --green:#4CAF7D;--green-d:#1E6B45;--green-bdr:rgba(76,175,125,.25);
+  --cream:#F0EBE0;--m1:rgba(240,235,224,.38);--m2:rgba(240,235,224,.62);
+  --red:#E05A5A;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--cream);cursor:none;overflow-x:hidden;min-height:100vh}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.028'/%3E%3C/svg%3E");pointer-events:none;z-index:9990}
+#C{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s}
+#CR{width:30px;height:30px;border:1px solid rgba(196,155,74,.45);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s}
+#C.h{width:14px;height:14px;background:var(--gold-l)}#CR.h{width:48px;height:48px;border-color:rgba(196,155,74,.8)}
+
+/* NAV */
+nav{position:sticky;top:0;background:rgba(10,12,15,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);z-index:100;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 5vw;position:sticky}
+nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-bdr),transparent)}
+.nl{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--cream)}
+.nl svg{width:30px;height:30px;flex-shrink:0}
+.nl-t{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;letter-spacing:.02em}
+.nl-s{font-size:.57rem;color:var(--gold);letter-spacing:.13em;text-transform:uppercase;font-weight:600}
+.nav-r{display:flex;align-items:center;gap:12px}
+.nav-user{font-size:.82rem;font-weight:500;color:var(--m2)}
+.cart-wrap{position:relative;cursor:pointer}
+.cart-btn{width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:all .2s;cursor:pointer}
+.cart-btn:hover{border-color:var(--gold-bdr);background:var(--card2)}
+.cart-ct{position:absolute;top:-3px;right:-3px;width:18px;height:18px;border-radius:50%;background:var(--gold);color:var(--bg);font-size:.58rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:transform .2s}
+.btn{padding:.4rem .95rem;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.bo{background:transparent;color:var(--m2);border:1px solid var(--bdr)}.bo:hover{border-color:var(--gold-bdr);color:var(--gold)}
+.bg{background:var(--gold-d);color:var(--gold-l);border:1px solid var(--gold-bdr)}.bg:hover{background:var(--gold);color:var(--bg);transform:translateY(-1px)}
+
+/* HERO */
+.hero{padding:48px 5vw 36px;background:var(--surf);border-bottom:1px solid var(--bdr);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(196,155,74,.06),transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-bdr),transparent)}
+.hero-inner{max-width:1140px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,2.9rem);font-weight:700;line-height:1.1;margin-bottom:.6rem}
+.hero h1 em{color:var(--gold);font-style:italic}
+.hero p{font-size:.88rem;color:var(--m2);line-height:1.72;max-width:480px;margin-bottom:1.1rem}
+.trust-pills{display:flex;gap:7px;flex-wrap:wrap}
+.tp{display:flex;align-items:center;gap:5px;font-size:.71rem;font-weight:600;padding:.24rem .72rem;border-radius:100px;background:rgba(255,255,255,.04);border:1px solid var(--bdr);color:var(--m2)}
+.hero-stats{display:flex;gap:24px;flex-shrink:0}
+.hs-v{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;line-height:1;color:var(--gold)}
+.hs-l{font-size:.67rem;color:var(--m1);margin-top:3px}
+
+/* MAIN */
+.main{max-width:1140px;margin:0 auto;padding:28px 5vw}
+
+/* FILTER BAR */
+.filter-bar{display:flex;gap:7px;margin-bottom:22px;flex-wrap:wrap;align-items:center}
+.fb-label{font-size:.64rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--m1);margin-right:3px}
+.fp{padding:.28rem .82rem;border-radius:100px;font-size:.76rem;font-weight:600;cursor:pointer;border:1px solid var(--bdr);background:transparent;color:var(--m2);transition:all .2s;font-family:'DM Sans',sans-serif}
+.fp.on{background:var(--gold-d);border-color:var(--gold-bdr);color:var(--gold-l)}
+.fp:hover:not(.on){border-color:var(--gold-bdr);color:var(--gold)}
+
+/* SECTION HEAD */
+.s-head{margin-bottom:16px}
+.s-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;margin-bottom:3px}
+.s-sub{font-size:.8rem;color:var(--m1)}
+
+/* PRODUCT GRID */
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pc{background:var(--card);border:1px solid var(--bdr);border-radius:14px;overflow:hidden;transition:all .25s;position:relative}
+.pc:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.4);border-color:rgba(196,155,74,.2)}
+.pi{height:140px;display:flex;align-items:center;justify-content:center;font-size:3.6rem;position:relative}
+.pi-v{background:linear-gradient(135deg,#0C1A0E,#1A3020)}
+.pi-f{background:linear-gradient(135deg,#1A1205,#2E2008)}
+.pi-g{background:linear-gradient(135deg,#170F04,#281A08)}
+.ob{position:absolute;top:9px;right:9px;background:rgba(30,107,69,.9);color:var(--green);font-size:.57rem;font-weight:700;padding:.16rem .48rem;border-radius:100px;letter-spacing:.06em;border:1px solid var(--green-bdr)}
+.qrb{position:absolute;top:9px;left:9px;width:26px;height:26px;background:rgba(255,255,255,.07);border:1px solid var(--bdr2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer;transition:all .2s}
+.qrb:hover{background:rgba(196,155,74,.15);border-color:var(--gold-bdr)}
+.pb{padding:14px 15px}
+.pn{font-weight:700;font-size:.93rem;margin-bottom:2px;color:var(--cream)}
+.pfm{font-size:.72rem;color:var(--m1);margin-bottom:9px}
+.pm{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:10px}
+.pp{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;line-height:1}
+.pp span{font-size:.72rem;color:var(--m1);font-family:'DM Sans',sans-serif;font-weight:400}
+.mrp{font-size:.68rem;color:var(--m1);text-decoration:line-through;margin-top:2px}
+.ptag{display:inline-block;font-size:.58rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.16rem .5rem;border-radius:100px}
+.tg{background:rgba(76,175,125,.1);color:var(--green);border:1px solid rgba(76,175,125,.18)}
+.ta{background:rgba(196,155,74,.1);color:var(--gold);border:1px solid rgba(196,155,74,.18)}
+.add-btn{width:100%;padding:.56rem;background:var(--card2);color:var(--cream);border:1px solid var(--bdr);border-radius:8px;font-size:.81rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.add-btn:hover{background:var(--gold-d);border-color:var(--gold-bdr);color:var(--gold-l);transform:translateY(-1px)}
+
+/* QR MODAL */
+.qr-ov{position:fixed;inset:0;background:rgba(10,12,15,.78);backdrop-filter:blur(12px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.qr-ov.on{opacity:1;pointer-events:all}
+.qr-box{background:var(--card);border:1px solid var(--gold-bdr);border-radius:18px;padding:26px;max-width:340px;width:90vw;text-align:center;position:relative;transform:translateY(10px);transition:transform .3s}
+.qr-ov.on .qr-box{transform:translateY(0)}
+.qr-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent)}
+.qr-ico{width:90px;height:90px;background:var(--surf);border:1px solid var(--bdr);border-radius:12px;margin:14px auto;display:flex;align-items:center;justify-content:center;font-size:2.6rem}
+.qr-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;margin-bottom:3px}
+.qr-meta{font-size:.79rem;color:var(--m2);line-height:1.75;text-align:left;background:var(--surf);border-radius:10px;padding:12px;margin:11px 0;border:1px solid var(--bdr)}
+
+/* CART PANEL */
+.cart-panel{position:fixed;top:0;right:0;bottom:0;width:340px;background:var(--surf);border-left:1px solid var(--bdr);z-index:200;transform:translateX(100%);transition:transform .35s cubic-bezier(.23,1,.32,1);display:flex;flex-direction:column}
+.cart-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-bdr),transparent)}
+.cart-panel.on{transform:translateX(0)}
+.cp-head{padding:20px 20px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.cp-head h3{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600}
+.cp-close{width:28px;height:28px;border-radius:50%;border:1px solid var(--bdr);background:transparent;cursor:pointer;font-size:.9rem;color:var(--m2);transition:all .2s;display:flex;align-items:center;justify-content:center}
+.cp-close:hover{border-color:var(--red);color:var(--red)}
+.cp-items{flex:1;overflow-y:auto;padding:14px 20px}
+.ci{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.ci-ic{width:38px;height:38px;background:var(--card);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.ci-nm{font-weight:600;font-size:.84rem;line-height:1.3}
+.ci-pr{font-size:.76rem;color:var(--m1)}
+.ci-rm{margin-left:auto;cursor:pointer;color:var(--m1);font-size:.82rem;transition:color .2s;flex-shrink:0;background:none;border:none;font-family:'DM Sans',sans-serif;padding:4px}
+.ci-rm:hover{color:var(--red)}
+.cp-foot{padding:14px 20px;border-top:1px solid var(--bdr);flex-shrink:0}
+.tot-box{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:12px;margin-bottom:11px}
+.tot-row{display:flex;justify-content:space-between;font-size:.81rem;color:var(--m2);margin-bottom:5px}
+.tot-final{display:flex;justify-content:space-between;font-size:.92rem;font-weight:700;padding-top:8px;border-top:1px solid var(--bdr);margin-top:3px}
+.chk-btn{width:100%;padding:.8rem;background:var(--gold-d);color:var(--gold-l);border:1px solid var(--gold-bdr);border-radius:8px;font-size:.86rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.chk-btn:hover{background:var(--gold);color:var(--bg);transform:translateY(-1px);box-shadow:0 6px 20px rgba(196,155,74,.3)}
+.empty-cart{text-align:center;padding:40px 20px;color:var(--m1);font-size:.84rem}
+
+@media(max-width:700px){.pgrid{grid-template-columns:1fr 1fr}.cart-panel{width:100vw}}
+@media(max-width:500px){.pgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="C"></div><div id="CR"></div>
+
+<nav>
+  <a href="../index.html" class="nl">
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="9" fill="#1A2818"/><path d="M20 6 C20 6 10 13 10 22 C10 27.5 14.5 32 20 32 C25.5 32 30 27.5 30 22 C30 13 20 6 20 6Z" fill="#3D8B5E"/><path d="M20 12 C20 12 15 17 15 22 C15 24.8 17.2 27 20 27 C22.8 27 25 24.8 25 22 C25 17 20 12 20 12Z" fill="#7BC8A4"/><path d="M20 16 L20 32" stroke="#1A2818" stroke-width="1.5" stroke-linecap="round"/><path d="M20 21 L16.5 18" stroke="#1A2818" stroke-width="1.3" stroke-linecap="round"/><path d="M20 25 L23.5 22" stroke="#1A2818" stroke-width="1.3" stroke-linecap="round"/></svg>
+    <div><div class="nl-t">AgriConnect</div><div class="nl-s">Marketplace</div></div>
+  </a>
+  <div class="nav-r">
+    <span class="nav-user" id="uNm">Priya Sharma</span>
+    <div class="cart-wrap" onclick="toggleCart()">
+      <div class="cart-btn">🛒</div>
+      <div class="cart-ct" id="cCt">0</div>
+    </div>
+    <button type="button" class="btn bo" onclick="logout()">Sign Out</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <h1>Farm-fresh.<br><em>Zero markup.</em></h1>
+      <p>Every product sourced directly from verified AgriConnect farmers. Harvested within 36 hours. No brokers, no cold storage inflation, no middlemen.</p>
+      <div class="trust-pills">
+        <div class="tp">✓ QR Farm Trace</div>
+        <div class="tp">🌱 Zero Chemicals</div>
+        <div class="tp">👨‍🌾 Farmer-priced</div>
+        <div class="tp">🚚 Same-day Bengaluru</div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hs-v">284</div><div class="hs-l">Daily orders</div></div>
+      <div><div class="hs-v">28%</div><div class="hs-l">Cheaper than mandi</div></div>
+      <div><div class="hs-v">72</div><div class="hs-l">NPS score</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="filter-bar">
+    <span class="fb-label">Filter:</span>
+    <button type="button" class="fp on" onclick="filt('all',this)">All Products</button>
+    <button type="button" class="fp" onclick="filt('v',this)">🥦 Vegetables</button>
+    <button type="button" class="fp" onclick="filt('f',this)">🍎 Fruits</button>
+    <button type="button" class="fp" onclick="filt('g',this)">🌾 Grains & Pulses</button>
+    <button type="button" class="fp" onclick="filt('o',this)">🌿 Organic Only</button>
+  </div>
+  <div class="s-head">
+    <div class="s-title">Today's Fresh Produce</div>
+    <div class="s-sub">All prices reflect fair farmer cost + transparent platform margin. Harvested within 36 hours.</div>
+  </div>
+  <div class="pgrid" id="pGrid"></div>
+</div>
+
+<!-- QR Modal -->
+<div class="qr-ov" id="qrOv">
+  <div class="qr-box">
+    <div class="qr-title" id="qrT">Farm Trace</div>
+    <div class="qr-ico" id="qrIc">📱</div>
+    <div class="qr-meta" id="qrM"></div>
+    <button type="button" class="btn bg" onclick="closeQR()">Close</button>
+  </div>
+</div>
+
+<!-- Cart Panel -->
+<div class="cart-panel" id="cartP">
+  <div class="cp-head">
+    <h3>Your Cart 🛒</h3>
+    <button type="button" class="cp-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cp-items" id="cItems">
+    <div class="empty-cart">Your cart is empty.<br>Add fresh produce above.</div>
+  </div>
+  <div class="cp-foot">
+    <div class="tot-box" id="totBox" style="display:none">
+      <div class="tot-row"><span>Subtotal</span><span id="totSub">₹0</span></div>
+      <div class="tot-row"><span>Delivery</span><span style="color:var(--green)">Free</span></div>
+      <div class="tot-final"><span>Total</span><span id="totFin">₹0</span></div>
+    </div>
+    <button type="button" class="chk-btn" onclick="checkout()">Proceed to Checkout →</button>
+    <p style="font-size:.69rem;color:var(--m1);text-align:center;margin-top:8px">Delivery 6–10am. Freshness guaranteed or refund.</p>
+  </div>
+</div>
+
+<script>
+/* AUTH */
+const u=JSON.parse(sessionStorage.getItem('ac_user')||'null');
+if(u&&u.name)document.getElementById('uNm').textContent=u.name;
+function logout(){sessionStorage.clear();window.location.href='../index.html'}
+
+/* CURSOR */
+const C=document.getElementById('C'),CR=document.getElementById('CR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;C.style.left=mx+'px';C.style.top=my+'px'});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;CR.style.left=rx+'px';CR.style.top=ry+'px';requestAnimationFrame(a)})();
+function hov(el){
+  el.addEventListener('mouseenter',()=>{C.classList.add('h');CR.classList.add('h')});
+  el.addEventListener('mouseleave',()=>{C.classList.remove('h');CR.classList.remove('h')});
+}
+document.querySelectorAll('button,.pc,.fp,.cart-wrap,.qrb,.nl').forEach(hov);
+
+/* PRODUCTS */
+const PRODS=[
+  {id:1,n:'Cherry Tomatoes',f:'Raju Gowda · Tumkur',p:45,m:80,u:'kg',e:'🍅',c:'v',o:true,farm:'Tumkur Plot B',soil:'Red soil · pH 6.8',harv:'Today 5am',chem:'Zero chemicals, verified'},
+  {id:2,n:'Baby Spinach',f:'Mani Reddy · Kolar',p:38,m:60,u:'bunch',e:'🌿',c:'v',o:true,farm:'Kolar Farm',soil:'Black soil · pH 7.0',harv:'Today 4am',chem:'Organic certified'},
+  {id:3,n:'Ragi (Finger Millet)',f:'Raju Gowda · Tumkur',p:62,m:90,u:'kg',e:'🌾',c:'g',o:true,farm:'Tumkur Plot C',soil:'Red soil',harv:'Apr 22',chem:'Zero pesticides'},
+  {id:4,n:'Fresh Cucumber',f:'Suresh Iyer · Mysuru',p:28,m:45,u:'kg',e:'🥒',c:'v',o:false,farm:'Mysuru Farm',soil:'Loam soil',harv:'Yesterday 6pm',chem:'Low pesticide use'},
+  {id:5,n:'Bitter Gourd',f:'Anand Kumar · Ramanagara',p:35,m:55,u:'kg',e:'🫑',c:'v',o:true,farm:'Ramanagara Land',soil:'Loam · pH 6.5',harv:'Today 7am',chem:'Zero chemicals'},
+  {id:6,n:'Toor Dal (Raw)',f:'Prema Kumar · Kolar',p:105,m:160,u:'kg',e:'🫘',c:'g',o:false,farm:'Kolar Plot 2',soil:'Black soil',harv:'Apr 20',chem:'Minimal pesticide'},
+  {id:7,n:'Banana (Nendran)',f:'Govinda Rao · Mandya',p:48,m:75,u:'dozen',e:'🍌',c:'f',o:true,farm:'Mandya Plantation',soil:'River alluvial',harv:'Yesterday',chem:'Traditional farming'},
+  {id:8,n:'Sweet Lime (Mosambi)',f:'Lakshmi Devi · Tumkur',p:55,m:85,u:'kg',e:'🍋',c:'f',o:true,farm:'Tumkur Orchard',soil:'Red loam',harv:'Today 8am',chem:'Zero chemicals'},
+  {id:9,n:'Fresh Maize',f:'Raju Gowda · Tumkur',p:22,m:35,u:'cob',e:'🌽',c:'v',o:true,farm:'Tumkur Plot A',soil:'Red soil',harv:'Today 6am',chem:'Zero chemicals'},
+];
+let cart=[],af='all';
+
+function filt(f,el){
+  af=f;
+  document.querySelectorAll('.fp').forEach(p=>p.classList.remove('on'));
+  el.classList.add('on');
+  renderG();
+}
+
+function renderG(){
+  const filtered=PRODS.filter(p=>af==='all'||(af==='o'?p.o:p.c===af));
+  const grid=document.getElementById('pGrid');
+  grid.innerHTML=filtered.map(p=>`
+    <div class="pc">
+      <div class="pi pi-${p.c}">
+        <div class="qrb" onclick="showQR(${p.id})" title="Farm Trace">📷</div>
+        ${p.e}
+        ${p.o?`<div class="ob">ORGANIC</div>`:''}
+      </div>
+      <div class="pb">
+        <div class="pn">${p.n}</div>
+        <div class="pfm">👨‍🌾 ${p.f}</div>
+        <div class="pm">
+          <div>
+            <div class="pp">₹${p.p} <span>/ ${p.u}</span></div>
+            <div class="mrp">MRP ₹${p.m}</div>
+          </div>
+          <span class="ptag ${p.o?'tg':'ta'}">${p.o?'Zero chem':'Low input'}</span>
+        </div>
+        <button type="button" class="add-btn" onclick="addC(${p.id})">Add to Cart  +</button>
+      </div>
+    </div>
+  `).join('');
+  // re-attach hover listeners after re-render
+  grid.querySelectorAll('.pc,.add-btn,.qrb').forEach(hov);
+}
+
+function showQR(id){
+  const p=PRODS.find(x=>x.id===id);
+  document.getElementById('qrT').textContent=p.n+' — Farm Trace';
+  document.getElementById('qrIc').textContent=p.e;
+  document.getElementById('qrM').innerHTML=`<strong>Farm:</strong> ${p.farm}<br><strong>Farmer:</strong> ${p.f}<br><strong>Soil:</strong> ${p.soil}<br><strong>Harvested:</strong> ${p.harv}<br><strong>Chemicals:</strong> ${p.chem}<br><br><span style="color:var(--green);font-weight:600">✓ AgriConnect Verified · Zero broker chain</span>`;
+  document.getElementById('qrOv').classList.add('on');
+}
+function closeQR(){document.getElementById('qrOv').classList.remove('on')}
+document.getElementById('qrOv').addEventListener('click',e=>{if(e.target===document.getElementById('qrOv'))closeQR()});
+
+function addC(id){
+  const p=PRODS.find(x=>x.id===id);
+  const ex=cart.find(x=>x.id===id);
+  if(ex)ex.qty++;else cart.push({...p,qty:1});
+  updateC();
+  // bounce cart count
+  const ct=document.getElementById('cCt');
+  ct.style.transform='scale(1.4)';
+  setTimeout(()=>ct.style.transform='scale(1)',200);
+}
+function removeC(id){cart=cart.filter(x=>x.id!==id);updateC()}
+
+function updateC(){
+  const total=cart.reduce((a,b)=>a+b.p*b.qty,0);
+  const count=cart.reduce((a,b)=>a+b.qty,0);
+  document.getElementById('cCt').textContent=count;
+  const items=document.getElementById('cItems');
+  if(cart.length===0){
+    items.innerHTML='<div class="empty-cart">Your cart is empty.<br>Add fresh produce above.</div>';
+    document.getElementById('totBox').style.display='none';
+  }else{
+    items.innerHTML=cart.map(p=>`
+      <div class="ci">
+        <div class="ci-ic">${p.e}</div>
+        <div><div class="ci-nm">${p.n}</div><div class="ci-pr">₹${p.p} × ${p.qty} = ₹${p.p*p.qty}</div></div>
+        <button type="button" class="ci-rm" onclick="removeC(${p.id})">✕</button>
+      </div>
+    `).join('');
+    document.getElementById('totSub').textContent='₹'+total;
+    document.getElementById('totFin').textContent='₹'+total;
+    document.getElementById('totBox').style.display='block';
+    // re-attach hover on remove buttons
+    items.querySelectorAll('.ci-rm').forEach(hov);
+  }
+}
+
+function toggleCart(){document.getElementById('cartP').classList.toggle('on')}
+
+function checkout(){
+  if(!cart.length){alert('Your cart is empty!');return}
+  const total=cart.reduce((a,b)=>a+b.p*b.qty,0);
+  alert('✅ Order placed successfully!\n\nDelivery tomorrow 6–10am to your doorstep.\nTotal: ₹'+total+'\n\nThank you for supporting Indian farmers directly.');
+  cart=[];
+  updateC();
+  document.getElementById('cartP').classList.remove('on');
+}
+
+renderG();
+</script>
+</body>
+</html>

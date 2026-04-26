@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriConnect — Landlord Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0A0C0F;--surf:#10131A;--card:#161B24;--card2:#1C2230;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.13);
+  --gold:#C49B4A;--gold-l:#E8D5A0;--gold-d:#7A5E28;--gold-bdr:rgba(196,155,74,.3);--gold-glow:rgba(196,155,74,.08);
+  --acc:#C49B4A;--acc-d:#7A5E28;--acc-bdr:rgba(196,155,74,.28);--acc-glow:rgba(196,155,74,.09);
+  --green:#4CAF7D;--green-d:#1E6B45;
+  --cream:#F0EBE0;--m1:rgba(240,235,224,.38);--m2:rgba(240,235,224,.62);
+  --red:#E05A5A;--blue:#5B9BD5;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--cream);min-height:100vh;display:flex;overflow-x:hidden;cursor:none}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.028'/%3E%3C/svg%3E");pointer-events:none;z-index:9990}
+#C{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s}
+#CR{width:30px;height:30px;border:1px solid rgba(196,155,74,.45);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s}
+#C.h{width:14px;height:14px}#CR.h{width:48px;height:48px;border-color:rgba(196,155,74,.8)}
+.sb{width:230px;background:var(--surf);border-right:1px solid var(--bdr);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
+.sb::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent)}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--cream)}
+.sb-logo svg{width:30px;height:30px;flex-shrink:0}
+.sb-lt{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600}.sb-ls{font-size:.57rem;color:var(--gold);letter-spacing:.13em;text-transform:uppercase;font-weight:600;margin-top:1px}
+.sb-user{padding:13px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+.sb-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold-d),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;border:1.5px solid var(--acc-bdr);flex-shrink:0}
+.sb-nm{font-size:.81rem;font-weight:600}.sb-rl{font-size:.62rem;color:var(--gold);font-weight:600;letter-spacing:.04em;margin-top:1px}
+.sb-sec{padding:16px 12px 4px;font-size:.56rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--m1)}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:8px;margin:1px 7px;cursor:pointer;transition:all .2s;font-size:.8rem;color:var(--m2);font-weight:500;border:1px solid transparent;background:transparent;width:calc(100% - 14px);text-align:left;font-family:'DM Sans',sans-serif;position:relative}
+.ni:hover{background:rgba(255,255,255,.04);color:var(--cream)}
+.ni.on{background:var(--acc-glow);color:var(--gold);border-color:rgba(196,155,74,.2)}
+.ni.on::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:2px;border-radius:0 2px 2px 0;background:var(--gold)}
+.ni-ic{width:15px;text-align:center;flex-shrink:0}
+.ni-bd{margin-left:auto;background:rgba(196,155,74,.14);color:var(--gold);font-size:.56rem;padding:.1rem .38rem;border-radius:100px;font-weight:700}
+.sb-bot{margin-top:auto;padding:12px;border-top:1px solid var(--bdr)}
+.b-out{display:flex;align-items:center;justify-content:center;gap:7px;padding:8px;border-radius:8px;border:1px solid var(--bdr);background:transparent;color:var(--m2);font-size:.76rem;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif;transition:all .2s}
+.b-out:hover{border-color:var(--red);color:var(--red)}
+.main{margin-left:230px;flex:1;min-height:100vh}
+.topbar{padding:13px 24px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(10,12,15,.92);backdrop-filter:blur(20px);z-index:50}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-bdr),transparent)}
+.pg-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600}.pg-sub{font-size:.69rem;color:var(--m1);margin-top:2px}
+.nb{width:32px;height:32px;border-radius:50%;background:var(--card);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.82rem;transition:border-color .2s;position:relative}
+.nb:hover{border-color:var(--gold-bdr)}
+.nd{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--gold);border:1.5px solid var(--bg)}
+.pg{display:none;padding:20px;animation:fi .28s ease}.pg.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.kr{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.kc{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:16px 18px;transition:all .25s;position:relative;overflow:hidden}
+.kc::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent);opacity:0;transition:opacity .3s}
+.kc:hover{border-color:var(--gold-bdr);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.3)}.kc:hover::after{opacity:1}
+.kl{font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--m1);margin-bottom:6px}
+.kv{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;line-height:1}
+.kch{font-size:.69rem;margin-top:5px}.up{color:var(--green)}.dn{color:var(--red)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.cd{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:18px;transition:border-color .25s}
+.cd:hover{border-color:rgba(255,255,255,.1)}
+.ct{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--m1);margin-bottom:11px;padding-bottom:8px;border-bottom:1px solid var(--bdr)}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.sh h3{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600}
+.tag{display:inline-block;font-size:.59rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.17rem .52rem;border-radius:100px}
+.tg{background:rgba(76,175,125,.1);color:var(--green);border:1px solid rgba(76,175,125,.2)}
+.ta{background:rgba(196,155,74,.1);color:var(--gold);border:1px solid rgba(196,155,74,.2)}
+.tr{background:rgba(224,90,90,.1);color:var(--red);border:1px solid rgba(224,90,90,.2)}
+.tbl2{background:rgba(91,155,213,.1);color:var(--blue);border:1px solid rgba(91,155,213,.2)}
+.btn{padding:.4rem .95rem;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;border:none;display:inline-flex;align-items:center;gap:5px}
+.bg{background:var(--gold-d);color:var(--gold-l);border:1px solid var(--gold-bdr)}.bg:hover{background:var(--gold);color:var(--bg);transform:translateY(-1px);box-shadow:0 4px 14px rgba(196,155,74,.25)}
+.bo{background:transparent;color:var(--m2);border:1px solid var(--bdr)}.bo:hover{border-color:var(--gold-bdr);color:var(--gold)}
+.bgreen{background:rgba(76,175,125,.1);color:var(--green);border:1px solid rgba(76,175,125,.2)}.bgreen:hover{background:var(--green);color:var(--bg)}
+.bred{background:rgba(224,90,90,.08);color:var(--red);border:1px solid rgba(224,90,90,.2)}.bred:hover{background:var(--red);color:white}
+.tbl{width:100%;border-collapse:collapse;font-size:.8rem}
+.tbl th{text-align:left;padding:8px 10px;font-size:.61rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--m1);border-bottom:1px solid var(--bdr)}
+.tbl td{padding:10px 10px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--m2)}
+.tbl td:first-child{color:var(--cream);font-weight:500}
+.tbl tr:last-child td{border-bottom:none}.tbl tr:hover td{background:rgba(255,255,255,.02)}
+.ac{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:14px;margin-bottom:8px;transition:border-color .2s}
+.ac:hover{border-color:var(--gold-bdr)}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:11px}
+.fl{font-size:.68rem;font-weight:600;color:var(--m1);letter-spacing:.04em}
+.fi{background:var(--surf);border:1.5px solid var(--bdr);border-radius:8px;padding:.58rem 1rem;color:var(--cream);font-size:.83rem;font-family:'DM Sans',sans-serif;outline:none;transition:all .2s;width:100%}
+.fi:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(196,155,74,.1)}
+.pf{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bc{display:flex;align-items:flex-end;gap:7px;height:105px;margin:8px 0}
+.bcc{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bcb{width:100%;border-radius:4px 4px 0 0;min-height:3px;transition:height .9s cubic-bezier(.23,1,.32,1)}
+.bcv{font-size:.59rem;color:var(--m2);font-weight:600}
+/* WIZARD */
+.wiz{display:flex;gap:0;margin-bottom:22px}
+.ws{flex:1;display:flex;align-items:center;font-size:.7rem;font-weight:600;color:var(--m1);position:relative}
+.ws::after{content:'';flex:1;height:1px;background:var(--bdr);margin:0 7px}
+.ws:last-child::after{display:none}
+.wsn{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:.68rem;flex-shrink:0;margin-right:5px;transition:all .3s}
+.ws.act .wsn{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+.ws.done .wsn{background:var(--green);border-color:var(--green);color:white}
+.ws.act{color:var(--gold)}
+.sp{display:none}.sp.on{display:block;animation:fi .28s ease}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.udrop{border:1.5px dashed var(--bdr2);border-radius:10px;padding:22px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:8px}
+.udrop:hover{border-color:var(--gold);background:var(--gold-glow)}
+.rc{background:var(--surf);border:1px solid var(--gold-bdr);border-radius:10px;padding:13px;margin-top:10px}
+.rc-line{display:flex;justify-content:space-between;padding:5px 0;font-size:.81rem;border-bottom:1px solid var(--bdr)}
+.rc-tot{display:flex;justify-content:space-between;padding:8px 0;font-size:.92rem;font-weight:700}
+@media(max-width:900px){.sb{display:none}.main{margin-left:0}.kr{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="C"></div><div id="CR"></div>
+<aside class="sb">
+  <a href="../index.html" class="sb-logo">
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="9" fill="#1A2818"/><path d="M20 6 C20 6 10 13 10 22 C10 27.5 14.5 32 20 32 C25.5 32 30 27.5 30 22 C30 13 20 6 20 6Z" fill="#3D8B5E"/><path d="M20 12 C20 12 15 17 15 22 C15 24.8 17.2 27 20 27 C22.8 27 25 24.8 25 22 C25 17 20 12 20 12Z" fill="#7BC8A4"/><path d="M20 16 L20 32" stroke="#1A2818" stroke-width="1.5" stroke-linecap="round"/><path d="M20 21 L16.5 18" stroke="#1A2818" stroke-width="1.3" stroke-linecap="round"/><path d="M20 25 L23.5 22" stroke="#1A2818" stroke-width="1.3" stroke-linecap="round"/></svg>
+    <div><div class="sb-lt">AgriConnect</div><div class="sb-ls">Landlord Portal</div></div>
+  </a>
+  <div class="sb-user">
+    <div class="sb-av" id="uAv">VR</div>
+    <div><div class="sb-nm" id="uNm">Vikram Rao</div><div class="sb-rl">Verified Landlord ✓</div></div>
+  </div>
+  <div class="sb-sec">Navigation</div>
+  <button type="button" class="ni on" id="n-dashboard" onclick="go('dashboard')"><span class="ni-ic">⌂</span>Dashboard</button>
+  <button type="button" class="ni" id="n-mylands" onclick="go('mylands')"><span class="ni-ic">◫</span>My Lands</button>
+  <button type="button" class="ni" id="n-listland" onclick="go('listland')"><span class="ni-ic">＋</span>List New Land</button>
+  <button type="button" class="ni" id="n-applications" onclick="go('applications')"><span class="ni-ic">👤</span>Farmer Applications<span class="ni-bd">2</span></button>
+  <button type="button" class="ni" id="n-leases" onclick="go('leases')"><span class="ni-ic">◻</span>Lease Agreements</button>
+  <button type="button" class="ni" id="n-earnings" onclick="go('earnings')"><span class="ni-ic">◉</span>Earnings</button>
+  <button type="button" class="ni" id="n-payments" onclick="go('payments')"><span class="ni-ic">◈</span>Payments</button>
+  <div class="sb-sec">Account</div>
+  <button type="button" class="ni" id="n-profile" onclick="go('profile')"><span class="ni-ic">○</span>My Profile</button>
+  <button type="button" class="ni" id="n-docs" onclick="go('docs')"><span class="ni-ic">□</span>Documents</button>
+  <div class="sb-bot"><button type="button" class="b-out" onclick="logout()">↩ Sign Out</button></div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div><div class="pg-title" id="pgT">Dashboard</div><div class="pg-sub">Saturday, 25 April 2025 · Bengaluru</div></div>
+    <div><div class="nb">🔔<div class="nd"></div></div></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="pg on" id="pg-dashboard">
+    <div class="kr">
+      <div class="kc"><div class="kl">Monthly Income</div><div class="kv">₹28,400</div><div class="kch up">↑ 8% vs last month</div></div>
+      <div class="kc"><div class="kl">Active Lands</div><div class="kv">3</div><div class="kch up">12.5 acres total</div></div>
+      <div class="kc"><div class="kl">Applications</div><div class="kv" style="color:var(--gold)">2</div><div class="kch">Pending review</div></div>
+      <div class="kc"><div class="kl">Total Earned (2025)</div><div class="kv">₹1,42,000</div><div class="kch up">↑ 18% vs 2024</div></div>
+    </div>
+    <div class="g2" style="margin-bottom:12px">
+      <div class="cd"><div class="ct">My Lands Overview</div>
+        <table class="tbl"><tr><th>Land</th><th>Size</th><th>Farmer</th><th>Rent/mo</th><th>Status</th></tr>
+          <tr><td>Tumkur Plot</td><td>4.5 ac</td><td>Raju Gowda</td><td>₹12,400</td><td><span class="tag tg">Active</span></td></tr>
+          <tr><td>Kolar Farm</td><td>5 ac</td><td>Mani Reddy</td><td>₹10,800</td><td><span class="tag tg">Active</span></td></tr>
+          <tr><td>Ramanagara</td><td>3 ac</td><td>—</td><td>₹7,200 est</td><td><span class="tag ta">Seeking</span></td></tr>
+        </table>
+      </div>
+      <div class="cd"><div class="ct">Recent Payments</div>
+        <table class="tbl"><tr><th>Date</th><th>Land</th><th>Amount</th></tr>
+          <tr><td>Apr 15</td><td>Tumkur Plot</td><td style="color:var(--green)">+₹12,400</td></tr>
+          <tr><td>Apr 15</td><td>Kolar Farm</td><td style="color:var(--green)">+₹10,800</td></tr>
+          <tr><td>Mar 15</td><td>Tumkur Plot</td><td style="color:var(--green)">+₹12,400</td></tr>
+          <tr><td>Mar 15</td><td>Kolar Farm</td><td style="color:var(--green)">+₹10,800</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="cd"><div class="ct">Pending Actions</div>
+        <div class="ac"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:.84rem;font-weight:600;margin-bottom:2px">2 Farmer Applications waiting</div><div style="font-size:.71rem;color:var(--m1)">Ramanagara Land — review & approve</div></div><button type="button" class="btn bg" onclick="go('applications')">Review</button></div></div>
+        <div class="ac"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:.84rem;font-weight:600;margin-bottom:2px">Lease renewal due Jun 30</div><div style="font-size:.71rem;color:var(--m1)">Tumkur Plot — Raju Gowda</div></div><button type="button" class="btn bo">View</button></div></div>
+      </div>
+      <div class="cd"><div class="ct">Verification Status</div>
+        <p style="font-size:.81rem;line-height:1.85;color:var(--m2)">✓ Aadhaar verified<br>✓ Land records (RTC) verified<br>✓ Bank account linked<br>✓ On-site visits — Tumkur & Kolar<br>⏳ On-site visit pending — Ramanagara</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY LANDS -->
+  <div class="pg" id="pg-mylands">
+    <div class="sh" style="margin-bottom:16px"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem">My Listed Lands</h3><button type="button" class="btn bg" onclick="go('listland')">+ List New Land</button></div>
+    <div class="g3">
+      <div class="cd" style="padding:0;overflow:hidden">
+        <div style="height:100px;background:linear-gradient(135deg,#2A1010,#5A2020);display:flex;align-items:center;justify-content:center;font-size:2.6rem">🌾</div>
+        <div style="padding:15px"><div style="font-weight:700;font-size:.93rem;margin-bottom:3px">Tumkur Plot</div><div style="font-size:.72rem;color:var(--m1);margin-bottom:8px">📍 Tumkur Taluk · 4.5 ac · Red soil</div><span class="tag tg">Active — Leased</span><div style="display:flex;gap:6px;margin-top:9px"><button type="button" class="btn bo">Details</button><button type="button" class="btn bo">Soil</button></div></div>
+      </div>
+      <div class="cd" style="padding:0;overflow:hidden">
+        <div style="height:100px;background:linear-gradient(135deg,#101010,#2A2A10);display:flex;align-items:center;justify-content:center;font-size:2.6rem">🏔️</div>
+        <div style="padding:15px"><div style="font-weight:700;font-size:.93rem;margin-bottom:3px">Kolar Farm</div><div style="font-size:.72rem;color:var(--m1);margin-bottom:8px">📍 Kolar District · 5 ac · Black soil</div><span class="tag tg">Active — Leased</span><div style="display:flex;gap:6px;margin-top:9px"><button type="button" class="btn bo">Details</button><button type="button" class="btn bo">Soil</button></div></div>
+      </div>
+      <div class="cd" style="padding:0;overflow:hidden">
+        <div style="height:100px;background:linear-gradient(135deg,#0F1A10,#1A2E1A);display:flex;align-items:center;justify-content:center;font-size:2.6rem">🌿</div>
+        <div style="padding:15px"><div style="font-weight:700;font-size:.93rem;margin-bottom:3px">Ramanagara Land</div><div style="font-size:.72rem;color:var(--m1);margin-bottom:8px">📍 Ramanagara · 3 ac · Loam soil</div><span class="tag ta">Seeking Farmer</span><div style="display:flex;gap:6px;margin-top:9px"><button type="button" class="btn bg" onclick="go('applications')">Applicants</button></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIST LAND -->
+  <div class="pg" id="pg-listland">
+    <div class="cd" style="max-width:660px"><div class="ct">List a New Land</div>
+      <div class="wiz" id="wizSteps">
+        <div class="ws act" id="ws0"><div class="wsn">1</div>Details</div>
+        <div class="ws" id="ws1"><div class="wsn">2</div>Location</div>
+        <div class="ws" id="ws2"><div class="wsn">3</div>Docs</div>
+        <div class="ws" id="ws3"><div class="wsn">4</div>Terms</div>
+        <div class="ws" id="ws4"><div class="wsn">5</div>Review</div>
+      </div>
+      <div class="sp on" id="step0">
+        <div class="frow"><div class="fg"><label class="fl">Land Name</label><input class="fi" id="lName" placeholder="e.g. My Tumkur Farm"></div><div class="fg"><label class="fl">Total Area (acres)</label><input class="fi" id="lArea" type="number" placeholder="3.5"></div></div>
+        <div class="frow"><div class="fg"><label class="fl">Soil Type</label><select class="fi" id="lSoil"><option>Red Soil</option><option>Black Soil</option><option>Loam</option><option>Sandy</option></select></div><div class="fg"><label class="fl">Water Source</label><select class="fi" id="lWater"><option>Borewell</option><option>Open Well</option><option>River / Canal</option><option>Drip Irrigation</option><option>Rainfed only</option></select></div></div>
+        <div class="fg"><label class="fl">Condition</label><select class="fi"><option>Ready to farm</option><option>Needs clearing</option><option>Fallow 1–2 years</option><option>Fallow 3+ years</option></select></div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px"><button type="button" class="btn bg" onclick="nxt(1)">Next →</button></div>
+      </div>
+      <div class="sp" id="step1">
+        <div class="frow"><div class="fg"><label class="fl">District</label><select class="fi"><option>Tumkur</option><option>Kolar</option><option>Ramanagara</option><option>Bengaluru Rural</option><option>Mysuru</option></select></div><div class="fg"><label class="fl">Taluk</label><input class="fi" placeholder="e.g. Tiptur Taluk"></div></div>
+        <div class="fg"><label class="fl">Village / Survey No.</label><input class="fi" placeholder="Survey No. 123/4 or village name"></div>
+        <div class="fg"><label class="fl">GPS Coordinates</label><input class="fi" placeholder="13.3409, 77.1012"></div>
+        <div style="background:var(--card2);border-radius:10px;height:110px;display:flex;align-items:center;justify-content:center;margin-bottom:11px;color:var(--m1);font-size:.82rem;border:1px solid var(--bdr)">🗺️ Interactive map — GPS pin drop</div>
+        <div style="display:flex;justify-content:space-between"><button type="button" class="btn bo" onclick="nxt(0)">← Back</button><button type="button" class="btn bg" onclick="nxt(2)">Next →</button></div>
+      </div>
+      <div class="sp" id="step2">
+        <p style="font-size:.81rem;color:var(--m2);margin-bottom:13px;line-height:1.65">Upload documents. All verified within 48 hours by AgriConnect legal team.</p>
+        <div class="udrop" onclick="this.querySelector('input').click()"><div style="font-size:1.4rem;margin-bottom:5px">📄</div><div style="font-size:.82rem;font-weight:600">RTC (Record of Rights)</div><div style="font-size:.71rem;color:var(--m1);margin-top:2px">Required</div><input type="file" style="display:none"></div>
+        <div class="udrop" onclick="this.querySelector('input').click()"><div style="font-size:1.4rem;margin-bottom:5px">📋</div><div style="font-size:.82rem;font-weight:600">Encumbrance Certificate</div><div style="font-size:.71rem;color:var(--m1);margin-top:2px">Required</div><input type="file" style="display:none"></div>
+        <div class="udrop" onclick="this.querySelector('input').click()"><div style="font-size:1.4rem;margin-bottom:5px">🪪</div><div style="font-size:.82rem;font-weight:600">Owner's Aadhaar Card</div><div style="font-size:.71rem;color:var(--m1);margin-top:2px">Required</div><input type="file" style="display:none"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px"><button type="button" class="btn bo" onclick="nxt(1)">← Back</button><button type="button" class="btn bg" onclick="nxt(3)">Next →</button></div>
+      </div>
+      <div class="sp" id="step3">
+        <div class="frow"><div class="fg"><label class="fl">Lease Type</label><select class="fi" id="lType" onchange="calcR()"><option>Monthly</option><option>6 Months</option><option>1 Year</option><option>3 Years</option></select></div><div class="fg"><label class="fl">Expected Monthly Rent (₹)</label><input class="fi" id="lRent" type="number" placeholder="8000" oninput="calcR()"></div></div>
+        <div class="frow"><div class="fg"><label class="fl">Min AgriScore</label><select class="fi"><option>No minimum</option><option>600+</option><option selected>700+ (Recommended)</option><option>800+</option></select></div><div class="fg"><label class="fl">Allowed Crops</label><select class="fi"><option>Any crops</option><option>Vegetables only</option><option>Cereals only</option></select></div></div>
+        <div class="rc"><div class="ct" style="margin-bottom:8px">Estimated Earnings</div>
+          <div class="rc-line"><span>Gross Rent</span><span id="rG">₹0 / mo</span></div>
+          <div class="rc-line"><span>Commission (10%)</span><span id="rC" style="color:var(--red)">-₹0</span></div>
+          <div class="rc-tot"><span>Your Net Payout</span><span id="rN" style="color:var(--green)">₹0 / mo</span></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:12px"><button type="button" class="btn bo" onclick="nxt(2)">← Back</button><button type="button" class="btn bg" onclick="nxt(4)">Review →</button></div>
+      </div>
+      <div class="sp" id="step4">
+        <div style="background:var(--card2);border-radius:10px;padding:16px;margin-bottom:13px">
+          <div style="font-size:.84rem;font-weight:700;color:var(--gold);margin-bottom:10px">Review Your Listing</div>
+          <div style="font-size:.82rem;color:var(--m2);line-height:1.9">📐 Area: <span id="rv-a" style="color:var(--cream)">—</span><br>🌱 Soil: <span id="rv-s" style="color:var(--cream)">—</span><br>💧 Water: <span id="rv-w" style="color:var(--cream)">—</span><br>💰 Net Rent: <span id="rv-r" style="color:var(--green)">—</span></div>
+        </div>
+        <p style="font-size:.78rem;color:var(--m1);margin-bottom:12px;line-height:1.65">✓ Documents verified in 48 hours. SMS + email confirmation when land goes live.</p>
+        <div style="display:flex;justify-content:space-between"><button type="button" class="btn bo" onclick="nxt(3)">← Back</button><button type="button" class="btn bg" onclick="submitL()">Submit Listing ✓</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATIONS -->
+  <div class="pg" id="pg-applications">
+    <div class="sh" style="margin-bottom:16px"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem">Farmer Applications</h3><span style="font-size:.79rem;color:var(--m1)">2 pending · Ramanagara Land</span></div>
+    <div class="ac" style="padding:17px">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:9px">
+        <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--green-d),var(--green));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;flex-shrink:0">SN</div>
+        <div><div style="font-weight:600;font-size:.89rem">Suresh Naidu</div><div style="font-size:.72rem;color:var(--m1)">AgriScore: 712 · 8 years farming · Ramanagara</div></div>
+        <span class="tag ta" style="margin-left:auto">New</span>
+      </div>
+      <p style="font-size:.82rem;color:var(--m2);line-height:1.65;margin-bottom:10px">Wants to lease Ramanagara Land for 1 year. Plans: tomatoes and ragi. Previous platform record shows 100% on-time payments.</p>
+      <div style="display:flex;gap:7px"><button type="button" class="btn bgreen">✓ Approve & Create Lease</button><button type="button" class="btn bo">📞 Call</button><button type="button" class="btn bred">✕ Decline</button></div>
+    </div>
+    <div class="ac" style="padding:17px;margin-top:8px">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:9px">
+        <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--green-d),var(--green));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;flex-shrink:0">PK</div>
+        <div><div style="font-weight:600;font-size:.89rem">Prema Kumar</div><div style="font-size:.72rem;color:var(--m1)">AgriScore: 685 · 5 years farming · Mysuru</div></div>
+        <span class="tag tbl2" style="margin-left:auto">Reviewed</span>
+      </div>
+      <p style="font-size:.82rem;color:var(--m2);line-height:1.65;margin-bottom:10px">Requesting 6-month lease for vegetable cultivation. Completed Level 1 training. Prefers drip irrigation crops.</p>
+      <div style="display:flex;gap:7px"><button type="button" class="btn bgreen">✓ Approve & Create Lease</button><button type="button" class="btn bo">📞 Call</button><button type="button" class="btn bred">✕ Decline</button></div>
+    </div>
+  </div>
+
+  <!-- LEASES -->
+  <div class="pg" id="pg-leases">
+    <div class="cd"><div class="sh"><h3>Active Lease Agreements</h3><button type="button" class="btn bo">+ New Agreement</button></div>
+      <table class="tbl"><tr><th>Land</th><th>Farmer</th><th>Term</th><th>Monthly Rent</th><th>Status</th><th>Action</th></tr>
+        <tr><td>Tumkur Plot</td><td>Raju Gowda</td><td>Jan–Dec 2025</td><td>₹12,400</td><td><span class="tag tg">Active</span></td><td><button type="button" class="btn bo">Print PDF</button></td></tr>
+        <tr><td>Kolar Farm</td><td>Mani Reddy</td><td>Mar 2025–Feb 2026</td><td>₹10,800</td><td><span class="tag tg">Active</span></td><td><button type="button" class="btn bo">Print PDF</button></td></tr>
+        <tr><td>Ramanagara</td><td>—</td><td>—</td><td>—</td><td><span class="tag ta">No Lease</span></td><td><button type="button" class="btn bg" onclick="go('applications')">View Applicants</button></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- EARNINGS -->
+  <div class="pg" id="pg-earnings">
+    <div class="kr">
+      <div class="kc"><div class="kl">Total Earned (2025)</div><div class="kv">₹1,42,000</div><div class="kch up">↑ 18% vs 2024</div></div>
+      <div class="kc"><div class="kl">This Month</div><div class="kv">₹28,400</div><div class="kch up">↑ 8% vs March</div></div>
+      <div class="kc"><div class="kl">Ramanagara Potential</div><div class="kv" style="color:var(--gold)">+₹7,200</div><div class="kch">When leased</div></div>
+      <div class="kc"><div class="kl">Commission Paid</div><div class="kv">₹14,200</div><div class="kch">10% platform fee</div></div>
+    </div>
+    <div class="cd" style="margin-bottom:12px">
+      <div class="sh"><h3>Monthly Earnings 2025</h3><button type="button" class="btn bo" onclick="exportCSV()">Export CSV</button></div>
+      <div class="bc" id="eChart"></div>
+      <div style="display:flex;justify-content:space-around;font-size:.65rem;color:var(--m1);margin-top:3px"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div>
+    </div>
+  </div>
+
+  <!-- PAYMENTS -->
+  <div class="pg" id="pg-payments">
+    <div class="cd"><div class="sh"><h3>Payment History</h3><button type="button" class="btn bo" onclick="exportCSV()">Export CSV</button></div>
+      <table class="tbl"><tr><th>Date</th><th>Land</th><th>Farmer</th><th>Gross</th><th>Commission</th><th>Net</th><th>Status</th></tr>
+        <tr><td>Apr 15</td><td>Tumkur Plot</td><td>Raju Gowda</td><td>₹13,778</td><td>-₹1,378</td><td style="color:var(--green)">₹12,400</td><td><span class="tag tg">Paid</span></td></tr>
+        <tr><td>Apr 15</td><td>Kolar Farm</td><td>Mani Reddy</td><td>₹12,000</td><td>-₹1,200</td><td style="color:var(--green)">₹10,800</td><td><span class="tag tg">Paid</span></td></tr>
+        <tr><td>Mar 15</td><td>Tumkur Plot</td><td>Raju Gowda</td><td>₹13,778</td><td>-₹1,378</td><td style="color:var(--green)">₹12,400</td><td><span class="tag tg">Paid</span></td></tr>
+        <tr><td>May 15</td><td>Tumkur Plot</td><td>Raju Gowda</td><td>₹13,778</td><td>-₹1,378</td><td style="color:var(--gold)">₹12,400</td><td><span class="tag ta">Upcoming</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="pg" id="pg-profile">
+    <div class="cd" style="max-width:580px;margin-bottom:12px"><div class="ct">Personal Information</div>
+      <div class="pf">
+        <div class="fg"><label class="fl">Full Name</label><input class="fi" value="Vikram Rao"></div>
+        <div class="fg"><label class="fl">Mobile</label><input class="fi" value="+91 98802 56789"></div>
+        <div class="fg"><label class="fl">Email</label><input class="fi" value="landlord@agriconnect.in"></div>
+        <div class="fg"><label class="fl">City</label><input class="fi" value="Bengaluru, Karnataka"></div>
+      </div>
+      <button type="button" class="btn bg" style="margin-top:13px;padding:.66rem 1.4rem">Save Changes</button>
+    </div>
+    <div class="cd" style="max-width:580px"><div class="ct">Bank Account</div>
+      <div class="pf">
+        <div class="fg"><label class="fl">Account Holder</label><input class="fi" value="Vikram Rao"></div>
+        <div class="fg"><label class="fl">Bank</label><input class="fi" value="HDFC Bank"></div>
+        <div class="fg"><label class="fl">Account No.</label><input class="fi" value="••••••7731" type="password"></div>
+        <div class="fg"><label class="fl">IFSC</label><input class="fi" value="HDFC0004521"></div>
+      </div>
+      <button type="button" class="btn bo" style="margin-top:13px;padding:.66rem 1.4rem">Update Bank Details</button>
+    </div>
+  </div>
+
+  <!-- DOCUMENTS -->
+  <div class="pg" id="pg-docs">
+    <div class="cd"><div class="ct">My Documents</div>
+      <table class="tbl"><tr><th>Document</th><th>Status</th><th>Uploaded</th><th>Action</th></tr>
+        <tr><td>Aadhaar Card</td><td><span class="tag tg">Verified</span></td><td>Jan 5, 2025</td><td><button type="button" class="btn bo">View</button></td></tr>
+        <tr><td>PAN Card</td><td><span class="tag tg">Verified</span></td><td>Jan 5, 2025</td><td><button type="button" class="btn bo">View</button></td></tr>
+        <tr><td>RTC — Tumkur Plot</td><td><span class="tag tg">Verified</span></td><td>Jan 8, 2025</td><td><button type="button" class="btn bo">Download</button></td></tr>
+        <tr><td>RTC — Kolar Farm</td><td><span class="tag tg">Verified</span></td><td>Mar 2, 2025</td><td><button type="button" class="btn bo">Download</button></td></tr>
+        <tr><td>RTC — Ramanagara</td><td><span class="tag ta">Pending</span></td><td>Apr 10, 2025</td><td><button type="button" class="btn bo">View</button></td></tr>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script>
+const u=JSON.parse(sessionStorage.getItem('ac_user')||'null');
+if(u&&u.name){document.getElementById('uNm').textContent=u.name;document.getElementById('uAv').textContent=u.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+const C=document.getElementById('C'),CR=document.getElementById('CR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;C.style.left=mx+'px';C.style.top=my+'px'});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;CR.style.left=rx+'px';CR.style.top=ry+'px';requestAnimationFrame(a)})();
+document.querySelectorAll('button,.kc,.cd,.udrop').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{C.classList.add('h');CR.classList.add('h')});
+  el.addEventListener('mouseleave',()=>{C.classList.remove('h');CR.classList.remove('h')});
+});
+const TITLES={dashboard:'Dashboard',mylands:'My Lands',listland:'List New Land',applications:'Farmer Applications',leases:'Lease Agreements',earnings:'Earnings',payments:'Payment History',profile:'My Profile',docs:'Documents'};
+function go(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  document.getElementById('n-'+id).classList.add('on');
+  document.getElementById('pgT').textContent=TITLES[id]||id;
+  if(id==='earnings')drawE();
+}
+function logout(){sessionStorage.clear();window.location.href='../index.html'}
+let cs=0;
+function nxt(n){
+  document.getElementById('step'+cs).classList.remove('on');
+  document.getElementById('ws'+cs).classList.remove('act');
+  document.getElementById('ws'+cs).classList.add('done');
+  cs=n;
+  document.getElementById('step'+cs).classList.add('on');
+  document.getElementById('ws'+cs).classList.add('act');
+  if(n===4){
+    document.getElementById('rv-a').textContent=(document.getElementById('lArea').value||'—')+' acres';
+    document.getElementById('rv-s').textContent=document.getElementById('lSoil').value;
+    document.getElementById('rv-w').textContent=document.getElementById('lWater').value;
+    const r=parseInt(document.getElementById('lRent').value)||0;
+    document.getElementById('rv-r').textContent=r?'₹'+(r-Math.round(r*.1)).toLocaleString('en-IN')+'/mo':'—';
+  }
+}
+function calcR(){
+  const r=parseInt(document.getElementById('lRent').value)||0,c=Math.round(r*.1);
+  document.getElementById('rG').textContent='₹'+r.toLocaleString('en-IN')+' / mo';
+  document.getElementById('rC').textContent='-₹'+c.toLocaleString('en-IN');
+  document.getElementById('rN').textContent='₹'+(r-c).toLocaleString('en-IN')+' / mo';
+}
+function submitL(){alert('✅ Listing submitted!\n\nDocuments verified in 48 hours. You\'ll receive SMS + email when your land goes live.');go('mylands')}
+function drawE(){
+  const w=document.getElementById('eChart');if(!w)return;
+  const data=[12400,12400,23200,28400,0,0],mx=Math.max(...data);w.innerHTML='';
+  data.forEach((v,i)=>{
+    const col=document.createElement('div');col.className='bcc';
+    const bar=document.createElement('div');bar.className='bcb';
+    bar.style.background=i===3?'var(--gold)':'rgba(196,155,74,.18)';bar.style.height='3px';
+    const lbl=document.createElement('div');lbl.className='bcv';lbl.textContent=v?'₹'+Math.round(v/1000)+'K':'';
+    col.appendChild(bar);col.appendChild(lbl);w.appendChild(col);
+    setTimeout(()=>{bar.style.height=v?Math.round(v/mx*100)+'%':'3px'},80+i*60);
+  });
+}
+function exportCSV(){const a=document.createElement('a');a.href='data:text/csv,'+encodeURIComponent('Date,Land,Farmer,Gross,Commission,Net,Status\nApr 15,Tumkur Plot,Raju Gowda,13778,1378,12400,Paid');a.download='payments.csv';a.click()}
+</script>
+</body>
+</html>

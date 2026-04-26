@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AgriConnect — FairScore™</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0A0C0F;--surf:#111419;--card:#181D26;
+  --bdr:rgba(255,255,255,.07);
+  --gold:#C49B4A;--gold-d:#7A5E28;--gold-bdr:rgba(196,155,74,.25);
+  --grn:#4CAF7D;--grn-d:#1E6B45;--grn-bdr:rgba(76,175,125,.25);
+  --amb:#E8883A;--amb-d:#7A3E12;--amb-bdr:rgba(232,136,58,.25);
+  --red:#E05A5A;--red-bdr:rgba(224,90,90,.25);
+  --blu:#5B9BD5;
+  --cream:#F0EBE0;--muted:rgba(240,235,224,.45);--muted2:rgba(240,235,224,.65);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--cream);min-height:100vh;display:flex;cursor:none;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9990}
+
+/* cursor */
+#C{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .18s,height .18s}
+#CR{width:28px;height:28px;border:1px solid rgba(196,155,74,.4);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .28s,height .28s,border-color .28s}
+#C.h{width:13px;height:13px}#CR.h{width:44px;height:44px;border-color:rgba(196,155,74,.75)}
+
+/* sidebar */
+.sb{width:220px;background:var(--surf);border-right:1px solid var(--bdr);display:flex;flex-direction:column;position:fixed;inset-block:0;left:0;z-index:100}
+.sb::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent)}
+.logo{padding:20px 16px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--cream)}
+.logo svg{width:28px;height:28px;flex-shrink:0}
+.logo-t{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600}
+.logo-s{font-size:.55rem;color:var(--amb);letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin-top:1px}
+.sb-label{padding:16px 14px 5px;font-size:.55rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:8px;margin:1px 7px;cursor:pointer;font-size:.8rem;color:var(--muted2);font-weight:500;border:1px solid transparent;background:transparent;width:calc(100% - 14px);text-align:left;font-family:'DM Sans',sans-serif;position:relative;transition:all .18s}
+.ni:hover{background:rgba(255,255,255,.04);color:var(--cream)}
+.ni.on{background:rgba(232,136,58,.08);color:var(--amb);border-color:var(--amb-bdr)}
+.ni.on::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2px;border-radius:0 2px 2px 0;background:var(--amb)}
+.ni svg{width:14px;height:14px;flex-shrink:0;opacity:.7}
+.ni.on svg{opacity:1}
+.badge{margin-left:auto;font-size:.55rem;font-weight:700;padding:.1rem .4rem;border-radius:100px;background:rgba(224,90,90,.15);color:var(--red)}
+.sb-foot{margin-top:auto;padding:14px;border-top:1px solid var(--bdr)}
+.back-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:8px;border-radius:8px;border:1px solid var(--bdr);background:transparent;color:var(--muted2);font-size:.75rem;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:none;transition:all .18s}
+.back-btn:hover{border-color:var(--gold-bdr);color:var(--gold)}
+
+/* main */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column}
+.topbar{padding:14px 28px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(10,12,15,.9);backdrop-filter:blur(20px);z-index:50}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--amb-bdr),transparent)}
+.tb-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600}
+.tb-sub{font-size:.68rem;color:var(--muted);margin-top:2px}
+.tb-right{display:flex;align-items:center;gap:8px}
+.pill{display:flex;align-items:center;gap:5px;font-size:.67rem;font-weight:600;letter-spacing:.06em;padding:.28rem .8rem;border-radius:100px}
+.pill-green{background:rgba(76,175,125,.1);border:1px solid var(--grn-bdr);color:var(--grn)}
+.pill-blue{background:rgba(91,155,213,.1);border:1px solid rgba(91,155,213,.25);color:var(--blu)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--grn);animation:p 2s infinite;flex-shrink:0}
+@keyframes p{0%,100%{box-shadow:0 0 0 2px rgba(76,175,125,.2)}50%{box-shadow:0 0 0 5px rgba(76,175,125,0)}}
+
+/* pages */
+.pg{display:none;padding:28px;animation:fi .25s ease}
+.pg.on{display:flex;flex-direction:column;gap:20px}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* KPI row */
+.krow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kc{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:18px 20px;transition:border-color .2s,transform .2s;position:relative;overflow:hidden}
+.kc:hover{border-color:var(--gold-bdr);transform:translateY(-2px)}
+.kc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:14px 14px 0 0}
+.kc.ka::before{background:linear-gradient(90deg,transparent,var(--amb),transparent)}
+.kc.kr::before{background:linear-gradient(90deg,transparent,var(--red),transparent)}
+.kc.kg::before{background:linear-gradient(90deg,transparent,var(--grn),transparent)}
+.kc.ko::before{background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.k-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.k-val{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;line-height:1}
+.k-note{font-size:.68rem;margin-top:6px}
+.good{color:var(--grn)}.warn{color:var(--amb)}.bad{color:var(--red)}.soft{color:var(--muted)}
+
+/* card */
+.cd{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px;transition:border-color .2s}
+.cd:hover{border-color:rgba(255,255,255,.1)}
+.cd-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.cd-sub{font-size:.68rem;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* alert banner */
+.alert{border-radius:12px;padding:14px 18px;display:flex;gap:12px;align-items:flex-start}
+.alert.bad{background:rgba(224,90,90,.06);border:1px solid var(--red-bdr)}
+.alert.warn{background:rgba(232,136,58,.06);border:1px solid var(--amb-bdr)}
+.alert.good{background:rgba(76,175,125,.06);border:1px solid var(--grn-bdr)}
+.alert-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+.alert-title{font-size:.85rem;font-weight:600;margin-bottom:3px}
+.alert-body{font-size:.78rem;color:var(--muted2);line-height:1.6}
+
+/* bias bar */
+.brow{margin-bottom:16px}
+.brow:last-child{margin-bottom:0}
+.brow-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.brow-label{font-size:.8rem;font-weight:500}
+.brow-val{font-size:.82rem;font-weight:700}
+.brow-bar{height:7px;background:rgba(255,255,255,.07);border-radius:100px;overflow:hidden;position:relative}
+.brow-fill{height:100%;border-radius:100px;transition:width 1.3s cubic-bezier(.23,1,.32,1)}
+.brow-line{position:absolute;top:0;bottom:0;width:1.5px;background:rgba(255,255,255,.2)}
+.brow-note{font-size:.67rem;color:var(--muted);margin-top:4px}
+
+/* tag */
+.tag{display:inline-block;font-size:.59rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.17rem .52rem;border-radius:100px}
+.tg{background:rgba(76,175,125,.1);color:var(--grn);border:1px solid var(--grn-bdr)}
+.ta{background:rgba(232,136,58,.1);color:var(--amb);border:1px solid var(--amb-bdr)}
+.tr{background:rgba(224,90,90,.1);color:var(--red);border:1px solid var(--red-bdr)}
+
+/* button */
+.btn{padding:.44rem 1.1rem;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;border:none;display:inline-flex;align-items:center;gap:6px}
+.btn-a{background:var(--amb-d);color:#F5C08A;border:1px solid var(--amb-bdr)}.btn-a:hover{background:var(--amb);color:var(--bg);transform:translateY(-1px)}
+.btn-g{background:var(--grn-d);color:var(--grn);border:1px solid var(--grn-bdr)}.btn-g:hover{background:var(--grn);color:var(--bg);transform:translateY(-1px)}
+.btn-o{background:transparent;color:var(--muted2);border:1px solid var(--bdr)}.btn-o:hover{border-color:var(--gold-bdr);color:var(--gold)}
+.btn-b{background:rgba(91,155,213,.1);color:var(--blu);border:1px solid rgba(91,155,213,.25)}.btn-b:hover{background:var(--blu);color:var(--bg)}
+
+/* gemini box */
+.gem-box{background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:18px;position:relative}
+.gem-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:12px 12px 0 0;background:linear-gradient(90deg,var(--blu),var(--amb))}
+.gem-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.gem-dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--blu),var(--amb));flex-shrink:0}
+.gem-label{font-size:.72rem;font-weight:700;color:var(--blu);letter-spacing:.05em}
+.gem-text{font-size:.83rem;line-height:1.78;color:var(--muted2);min-height:60px;white-space:pre-wrap}
+.gem-think{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.78rem}
+.dots span{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--blu);margin:0 1.5px;animation:blink 1.4s infinite}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.gem-btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+
+/* compare */
+.compare{display:grid;grid-template-columns:1fr 48px 1fr;gap:12px;align-items:center}
+.comp-card{background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:18px;text-align:center}
+.comp-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.comp-num{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:700;line-height:1}
+.comp-sub{font-size:.72rem;color:var(--muted);margin-top:6px}
+.comp-arrow{text-align:center;font-size:1.4rem;color:var(--grn)}
+
+/* slider row */
+.sl-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.sl-label{font-size:.78rem;color:var(--muted2);width:140px;flex-shrink:0}
+.sl{flex:1;accent-color:var(--amb)}
+.sl-val{font-size:.75rem;font-weight:700;width:34px;text-align:right}
+
+/* farmer card */
+.farmer-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.fav{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--grn-d),var(--grn));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;border:1.5px solid var(--grn-bdr);flex-shrink:0}
+.fname{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600}
+.fmeta{font-size:.7rem;color:var(--muted);margin-top:2px}
+.frow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bdr)}
+.frow:last-child{border-bottom:none}
+.frow-name{font-size:.8rem;flex:1}
+.frow-bar{flex:2;height:5px;background:rgba(255,255,255,.07);border-radius:100px;overflow:hidden}
+.frow-fill{height:100%;border-radius:100px}
+.frow-val{font-size:.76rem;font-weight:700;width:34px;text-align:right}
+.frow-tag{font-size:.6rem;font-weight:700;padding:.1rem .42rem;border-radius:100px;flex-shrink:0}
+
+/* impact numbers */
+.irow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ic{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px;text-align:center;transition:border-color .2s,transform .2s}
+.ic:hover{border-color:var(--gold-bdr);transform:translateY(-2px)}
+.ic-val{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:700;line-height:1;margin-bottom:6px}
+.ic-label{font-size:.7rem;color:var(--muted);line-height:1.5}
+
+/* google stack */
+.tech-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tc{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:14px}
+.tc-name{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px}
+.tc-desc{font-size:.77rem;color:var(--muted2);line-height:1.5}
+
+/* form */
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.fl{font-size:.67rem;font-weight:600;color:var(--muted);letter-spacing:.04em}
+.fi{background:var(--surf);border:1.5px solid var(--bdr);border-radius:8px;padding:.58rem 1rem;color:var(--cream);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;width:100%}
+.fi:focus{border-color:var(--amb)}
+.checks{display:flex;flex-direction:column;gap:7px}
+.check-row{display:flex;align-items:center;gap:8px;font-size:.81rem;cursor:pointer}
+
+/* progress */
+.prog{display:flex;gap:0;margin-bottom:20px}
+.ps{flex:1;display:flex;align-items:center;position:relative}
+.ps::after{content:'';flex:1;height:1px;background:var(--bdr);margin:0 6px}
+.ps:last-child::after{display:none}
+.pd{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;background:var(--card);color:var(--muted);transition:all .3s}
+.ps.done .pd{background:var(--grn-d);border-color:var(--grn);color:var(--grn)}
+.ps.act .pd{background:var(--amb-d);border-color:var(--amb);color:var(--amb)}
+.ps-l{font-size:.63rem;color:var(--muted);margin-left:5px;white-space:nowrap}
+.ps.act .ps-l{color:var(--amb)}.ps.done .ps-l{color:var(--grn)}
+
+@media(max-width:960px){.sb{display:none}.main{margin-left:0}.krow{grid-template-columns:1fr 1fr}.two,.irow,.tech-row{grid-template-columns:1fr}.compare{grid-template-columns:1fr 32px 1fr}}
+</style>
+</head>
+<body>
+<div id="C"></div><div id="CR"></div>
+
+<!-- SIDEBAR -->
+<aside class="sb">
+  <a href="../index.html" class="logo">
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="9" fill="#1A2818"/><path d="M20 6C20 6 10 13 10 22C10 27.5 14.5 32 20 32C25.5 32 30 27.5 30 22C30 13 20 6 20 6Z" fill="#3D8B5E"/><path d="M20 12C20 12 15 17 15 22C15 24.8 17.2 27 20 27C22.8 27 25 24.8 25 22C25 17 20 12 20 12Z" fill="#7BC8A4"/><path d="M20 16L20 32" stroke="#1A2818" stroke-width="1.5" stroke-linecap="round"/><path d="M20 21L16.5 18" stroke="#1A2818" stroke-width="1.3" stroke-linecap="round"/><path d="M20 25L23.5 22" stroke="#1A2818" stroke-width="1.3" stroke-linecap="round"/></svg>
+    <div><div class="logo-t">AgriConnect</div><div class="logo-s">FairScore™</div></div>
+  </a>
+
+  <div class="sb-label">Audit</div>
+  <button type="button" class="ni on" id="n-home" onclick="go('home')">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2z"/></svg>
+    Overview <span class="badge">2</span>
+  </button>
+  <button type="button" class="ni" id="n-audit" onclick="go('audit')">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+    Run Audit
+  </button>
+  <button type="button" class="ni" id="n-explain" onclick="go('explain')">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2a6 6 0 100 12A6 6 0 008 2zm0 4v2m0 2.5v.5"/></svg>
+    Gemini Explain
+  </button>
+  <button type="button" class="ni" id="n-fix" onclick="go('fix')">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M8 3v10"/></svg>
+    Fix Bias
+  </button>
+
+  <div class="sb-label">Farmer</div>
+  <button type="button" class="ni" id="n-farmer" onclick="go('farmer')">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5"/></svg>
+    Why My Score?
+  </button>
+  <button type="button" class="ni" id="n-impact" onclick="go('impact')">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12l4-4 3 3 5-6"/></svg>
+    Impact
+  </button>
+
+  <div class="sb-foot">
+    <a href="../index.html" class="back-btn">← AgriConnect Home</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="tb-title" id="pgT">Overview</div>
+      <div class="tb-sub">AgriScore™ Fairness Audit · Bengaluru, Karnataka</div>
+    </div>
+    <div class="tb-right">
+      <div class="pill pill-green"><span class="dot"></span>Live</div>
+      <div class="pill pill-blue">⬡ Gemini</div>
+    </div>
+  </div>
+
+  <!-- ═══ HOME ═══ -->
+  <div class="pg on" id="pg-home">
+    <div class="krow">
+      <div class="kc ka"><div class="k-label">Fairness Score</div><div class="k-val warn">64/100</div><div class="k-note warn">⚠ Below threshold</div></div>
+      <div class="kc kr"><div class="k-label">Bias Alerts</div><div class="k-val bad">2</div><div class="k-note bad">Critical — fix needed</div></div>
+      <div class="kc kg"><div class="k-label">Farmers Audited</div><div class="k-val">3,247</div><div class="k-note good">Full dataset</div></div>
+      <div class="kc ko"><div class="k-label">Last Audit</div><div class="k-val" style="color:var(--gold)">Today</div><div class="k-note soft">v2.1 · April 2025</div></div>
+    </div>
+
+    <div class="alert bad">
+      <div class="alert-icon">🔴</div>
+      <div>
+        <div class="alert-title">Gender Bias in AgriScore™</div>
+        <div class="alert-body">Women farmers score 23% lower than men with identical land, yield and payment history. Root cause: Training Completion criterion (18% weight) assumes travel access women don't have.</div>
+      </div>
+    </div>
+    <div class="alert warn">
+      <div class="alert-icon">🟡</div>
+      <div>
+        <div class="alert-title">Rain-fed Farmer Penalty</div>
+        <div class="alert-body">Farmers without irrigation score 15% lower on Yield Consistency — not from poor practice, but because rain is unpredictable. 31% of our farmers are affected.</div>
+      </div>
+    </div>
+
+    <div class="cd">
+      <div class="cd-title">Fairness by Group <span class="cd-sub">Threshold ≥ 0.80</span></div>
+      <div class="brow">
+        <div class="brow-head"><span class="brow-label">Women farmers</span><span class="brow-val bad">0.71 — FAIL</span></div>
+        <div class="brow-bar"><div class="brow-fill" id="b1" style="width:0%;background:var(--red)"></div><div class="brow-line" style="left:80%"></div></div>
+        <div class="brow-note">Demographic Parity Ratio · 0.71 of male approval rate</div>
+      </div>
+      <div class="brow">
+        <div class="brow-head"><span class="brow-label">Rain-fed farmers</span><span class="brow-val warn">0.78 — Borderline</span></div>
+        <div class="brow-bar"><div class="brow-fill" id="b2" style="width:0%;background:var(--amb)"></div><div class="brow-line" style="left:80%"></div></div>
+        <div class="brow-note">Disparate Impact Ratio · just below threshold</div>
+      </div>
+      <div class="brow">
+        <div class="brow-head"><span class="brow-label">Small landholders</span><span class="brow-val good">0.82 — PASS</span></div>
+        <div class="brow-bar"><div class="brow-fill" id="b3" style="width:0%;background:var(--grn)"></div><div class="brow-line" style="left:80%"></div></div>
+        <div class="brow-note">No significant disparity detected</div>
+      </div>
+      <div class="brow" style="margin-bottom:0">
+        <div class="brow-head"><span class="brow-label">SC/ST farmers</span><span class="brow-val good">0.87 — PASS</span></div>
+        <div class="brow-bar"><div class="brow-fill" id="b4" style="width:0%;background:var(--grn)"></div><div class="brow-line" style="left:80%"></div></div>
+        <div class="brow-note">No significant disparity detected</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ AUDIT ═══ -->
+  <div class="pg" id="pg-audit">
+    <div class="cd">
+      <div class="cd-title">Configure Audit</div>
+      <div class="two">
+        <div>
+          <div class="fg"><label class="fl">Dataset</label><select class="fi" style="cursor:pointer"><option>Karnataka Pilot — 3,247 farmers</option><option>Tumkur District — 1,240 farmers</option><option>Kolar District — 820 farmers</option></select></div>
+          <div class="fg"><label class="fl">Fairness Threshold</label><select class="fi" style="cursor:pointer"><option>0.80 — Standard (80/20 rule)</option><option>0.85 — Strict</option><option>0.75 — Lenient</option></select></div>
+        </div>
+        <div>
+          <div class="fl" style="margin-bottom:8px">Protected Groups to Test</div>
+          <div class="checks">
+            <label class="check-row"><input type="checkbox" checked style="accent-color:var(--amb)"> Gender</label>
+            <label class="check-row"><input type="checkbox" checked style="accent-color:var(--amb)"> Irrigation type</label>
+            <label class="check-row"><input type="checkbox" style="accent-color:var(--amb)"> Land size</label>
+            <label class="check-row"><input type="checkbox" style="accent-color:var(--amb)"> Caste (SC/ST)</label>
+            <label class="check-row"><input type="checkbox" style="accent-color:var(--amb)"> District</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cd">
+      <div class="cd-title">Progress</div>
+      <div class="prog">
+        <div class="ps done" id="s0"><div class="pd">✓</div><span class="ps-l">Data loaded</span></div>
+        <div class="ps act" id="s1"><div class="pd">2</div><span class="ps-l">Metrics</span></div>
+        <div class="ps" id="s2"><div class="pd">3</div><span class="ps-l">Disparity</span></div>
+        <div class="ps" id="s3"><div class="pd">4</div><span class="ps-l">AI Report</span></div>
+        <div class="ps" id="s4"><div class="pd">5</div><span class="ps-l">Done</span></div>
+      </div>
+      <div id="audit-out" style="font-size:.82rem;color:var(--muted2);padding:10px 0;min-height:60px;white-space:pre-wrap;line-height:1.8">Configure above then click Run Audit.</div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button type="button" class="btn btn-a" id="runBtn" onclick="runAudit()">▶ Run Audit</button>
+        <button type="button" class="btn btn-o" onclick="resetAudit()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EXPLAIN ═══ -->
+  <div class="pg" id="pg-explain">
+    <div class="gem-box">
+      <div class="gem-head"><div class="gem-dot"></div><div class="gem-label">Finding 1 — Gender Bias · DPR 0.71</div></div>
+      <div class="gem-text" id="g1">Click a button below to generate explanation.</div>
+      <div class="gem-btns">
+        <button type="button" class="btn btn-b" onclick="explain(1,'explain')">⬡ Explain</button>
+        <button type="button" class="btn btn-o" onclick="explain(1,'fix')">✦ How to Fix</button>
+        <button type="button" class="btn btn-o" onclick="explain(1,'farmer')">👤 Farmer Language</button>
+      </div>
+    </div>
+
+    <div class="gem-box">
+      <div class="gem-head"><div class="gem-dot"></div><div class="gem-label">Finding 2 — Rain-fed Penalty · DPR 0.78</div></div>
+      <div class="gem-text" id="g2">Click a button below to generate explanation.</div>
+      <div class="gem-btns">
+        <button type="button" class="btn btn-b" onclick="explain(2,'explain')">⬡ Explain</button>
+        <button type="button" class="btn btn-o" onclick="explain(2,'fix')">✦ How to Fix</button>
+        <button type="button" class="btn btn-o" onclick="explain(2,'farmer')">👤 Farmer Language</button>
+      </div>
+    </div>
+
+    <div class="cd">
+      <div class="cd-title">Ask Gemini Anything</div>
+      <div class="fg"><input class="fi" id="qInput" placeholder="e.g. Why are women farmers scoring lower?"></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+        <button type="button" class="btn btn-o" style="font-size:.72rem" onclick="setQ('Which training sessions are women farmers missing?')">Training gap?</button>
+        <button type="button" class="btn btn-o" style="font-size:.72rem" onclick="setQ('How does rainfall affect soil care scores?')">Rainfall impact?</button>
+        <button type="button" class="btn btn-o" style="font-size:.72rem" onclick="setQ('Best debiasing strategy for Indian agriculture?')">Best fix?</button>
+      </div>
+      <button type="button" class="btn btn-a" onclick="customQ()">⬡ Ask →</button>
+      <div class="gem-text" id="gCustom" style="margin-top:14px;background:rgba(255,255,255,.03);border-radius:8px;padding:14px;border:1px solid var(--bdr)">Answer appears here…</div>
+    </div>
+  </div>
+
+  <!-- ═══ FIX ═══ -->
+  <div class="pg" id="pg-fix">
+    <div class="cd">
+      <div class="cd-title">Recalibrate AgriScore™ Weights</div>
+      <p style="font-size:.8rem;color:var(--muted2);margin-bottom:18px;line-height:1.65">Drag the <span style="color:var(--red)">Training Completion</span> slider down. Watch the projected fairness score update live. Apply when satisfied.</p>
+      <div class="sl-row"><span class="sl-label">Payment History</span><input type="range" class="sl" min="10" max="35" value="20" id="w1" oninput="updateW()"><span class="sl-val" id="wv1">20%</span></div>
+      <div class="sl-row"><span class="sl-label">Yield Consistency</span><input type="range" class="sl" min="5" max="35" value="22" id="w2" oninput="updateW()"><span class="sl-val" id="wv2">22%</span></div>
+      <div class="sl-row"><span class="sl-label">Land Care</span><input type="range" class="sl" min="5" max="25" value="15" id="w3" oninput="updateW()"><span class="sl-val" id="wv3">15%</span></div>
+      <div class="sl-row"><span class="sl-label">Soil Care</span><input type="range" class="sl" min="5" max="25" value="15" id="w4" oninput="updateW()"><span class="sl-val" id="wv4">15%</span></div>
+      <div class="sl-row"><span class="sl-label" style="color:var(--red)">Training Completion ↓</span><input type="range" class="sl" min="2" max="25" value="18" id="w5" oninput="updateW()" style="accent-color:var(--red)"><span class="sl-val" id="wv5" style="color:var(--red)">18%</span></div>
+      <div class="sl-row"><span class="sl-label">Platform Behaviour</span><input type="range" class="sl" min="5" max="18" value="10" id="w6" oninput="updateW()"><span class="sl-val" id="wv6">10%</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid var(--bdr);margin-top:4px">
+        <span style="font-size:.77rem;color:var(--muted)">Total</span>
+        <span id="wtotal" style="font-size:.86rem;font-weight:700;color:var(--grn)">100%</span>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="comp-card">
+        <div class="comp-label">Before</div>
+        <div class="comp-num bad">0.71</div>
+        <div class="comp-sub"><span class="tag tr">FAIL</span></div>
+        <div style="font-size:.73rem;color:var(--muted);margin-top:8px">Women avg score: 576<br>Loan approval: 41%</div>
+      </div>
+      <div class="comp-arrow">→</div>
+      <div class="comp-card" id="afterCard" style="border-color:var(--bdr)">
+        <div class="comp-label">After</div>
+        <div class="comp-num" id="afterNum" style="color:var(--muted)">0.71</div>
+        <div class="comp-sub"><span class="tag ta" id="afterTag">Adjust sliders</span></div>
+        <div style="font-size:.73rem;color:var(--muted);margin-top:8px" id="afterNote">Move Training slider to simulate</div>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-g" style="align-self:flex-start" onclick="applyFix()">✓ Apply Recalibration</button>
+  </div>
+
+  <!-- ═══ FARMER ═══ -->
+  <div class="pg" id="pg-farmer">
+    <div class="two">
+      <div class="cd">
+        <div class="farmer-head">
+          <div class="fav">LM</div>
+          <div>
+            <div class="fname">Lakshmi Muthu</div>
+            <div class="fmeta">Women · Rain-fed · Tumkur · 2 acres</div>
+          </div>
+          <div style="margin-left:auto;text-align:center">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--red);line-height:1">498</div>
+            <div style="font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Score</div>
+          </div>
+        </div>
+        <div class="frow"><span class="frow-name">Payment History</span><div class="frow-bar"><div class="frow-fill" style="width:92%;background:var(--grn)"></div></div><span class="frow-val good">92%</span><span class="frow-tag tg">Good</span></div>
+        <div class="frow"><span class="frow-name">Yield Consistency</span><div class="frow-bar"><div class="frow-fill" style="width:61%;background:var(--amb)"></div></div><span class="frow-val warn">61%</span><span class="frow-tag ta">Rain</span></div>
+        <div class="frow"><span class="frow-name">Land Care</span><div class="frow-bar"><div class="frow-fill" style="width:78%;background:var(--grn)"></div></div><span class="frow-val good">78%</span><span class="frow-tag tg">Good</span></div>
+        <div class="frow"><span class="frow-name">Training</span><div class="frow-bar"><div class="frow-fill" style="width:28%;background:var(--red)"></div></div><span class="frow-val bad">28%</span><span class="frow-tag tr">Access</span></div>
+        <div class="frow"><span class="frow-name">Soil Care</span><div class="frow-bar"><div class="frow-fill" style="width:54%;background:var(--amb)"></div></div><span class="frow-val warn">54%</span><span class="frow-tag ta">Rain</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="gem-box">
+          <div class="gem-head"><div class="gem-dot"></div><div class="gem-label">Gemini explains to Lakshmi</div></div>
+          <div class="gem-text" id="fExplain">Choose a language below to explain her score.</div>
+          <div class="gem-btns">
+            <button type="button" class="btn btn-b" onclick="farmerX('en')">English</button>
+            <button type="button" class="btn btn-o" onclick="farmerX('kn')">ಕನ್ನಡ</button>
+            <button type="button" class="btn btn-o" onclick="farmerX('hi')">हिंदी</button>
+          </div>
+        </div>
+        <div class="alert warn">
+          <div class="alert-icon">📱</div>
+          <div>
+            <div class="alert-title">Quick Fix Available</div>
+            <div class="alert-body">Complete 3 app-based training modules in Kannada audio — no travel needed. Estimated +18 points. Your Yield score will also auto-correct for last year's below-average monsoon: +12 points.</div>
+          </div>
+        </div>
+        <div class="alert good">
+          <div class="alert-icon">🛡️</div>
+          <div>
+            <div class="alert-title">Insurance Override Applied</div>
+            <div class="alert-body">Despite your current score, your 92% payment history qualifies you for PMFBY under the bias-corrected access policy for rain-fed women farmers.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ IMPACT ═══ -->
+  <div class="pg" id="pg-impact">
+    <div class="alert good">
+      <div class="alert-icon">✦</div>
+      <div>
+        <div class="alert-title">The AgriConnect Promise</div>
+        <div class="alert-body">We built AgriConnect to remove broker injustice from Indian farming. Then we realised our own AI could create a new invisible injustice — so we built FairScore™ to audit ourselves.</div>
+      </div>
+    </div>
+
+    <div class="irow">
+      <div class="ic"><div class="ic-val bad" id="ic1">0</div><div class="ic-label">Women farmers affected by score bias</div></div>
+      <div class="ic"><div class="ic-val warn" id="ic2">0</div><div class="ic-label">Loan denials reversed after fix</div></div>
+      <div class="ic"><div class="ic-val good" id="ic3">0</div><div class="ic-label">Acres unlocked for women farmers</div></div>
+    </div>
+
+    <div class="cd">
+      <div class="cd-title">Before vs After — Key Numbers</div>
+      <div class="two">
+        <div>
+          <table style="width:100%;border-collapse:collapse;font-size:.81rem">
+            <tr><th style="text-align:left;padding:7px 10px;font-size:.61rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--bdr)">Metric</th><th style="text-align:center;padding:7px 10px;font-size:.61rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--bdr)">Before</th><th style="text-align:center;padding:7px 10px;font-size:.61rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--bdr)">After</th></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid var(--bdr);color:var(--cream);font-weight:500">Women avg score</td><td style="padding:9px 10px;border-bottom:1px solid var(--bdr);text-align:center;color:var(--red)">576</td><td style="padding:9px 10px;border-bottom:1px solid var(--bdr);text-align:center;color:var(--grn)">698</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid var(--bdr);color:var(--cream);font-weight:500">Loan approval (women)</td><td style="padding:9px 10px;border-bottom:1px solid var(--bdr);text-align:center;color:var(--red)">41%</td><td style="padding:9px 10px;border-bottom:1px solid var(--bdr);text-align:center;color:var(--grn)">67%</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid var(--bdr);color:var(--cream);font-weight:500">Gender DPR</td><td style="padding:9px 10px;border-bottom:1px solid var(--bdr);text-align:center;color:var(--red)">0.71</td><td style="padding:9px 10px;border-bottom:1px solid var(--bdr);text-align:center;color:var(--grn)">0.88</td></tr>
+            <tr><td style="padding:9px 10px;color:var(--cream);font-weight:500">Rain-fed DPR</td><td style="padding:9px 10px;text-align:center;color:var(--amb)">0.78</td><td style="padding:9px 10px;text-align:center;color:var(--grn)">0.87</td></tr>
+          </table>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:16px">
+            <div style="font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px">Additional credit unlocked</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--grn)">₹4.2 Crore</div>
+            <div style="font-size:.73rem;color:var(--muted);margin-top:3px">For women farmers · Karnataka pilot</div>
+          </div>
+          <div style="background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:16px">
+            <div style="font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px">Avg income increase</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--gold)">₹3,800/mo</div>
+            <div style="font-size:.73rem;color:var(--muted);margin-top:3px">Per woman farmer after fair access</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cd">
+      <div class="cd-title">Built on Google</div>
+      <div class="tech-row">
+        <div class="tc"><div class="tc-name" style="color:var(--blu)">Gemini 1.5 Pro</div><div class="tc-desc">Plain-language bias explanations for farmers & admins</div></div>
+        <div class="tc"><div class="tc-name" style="color:var(--amb)">Vertex AI</div><div class="tc-desc">Fairness metrics — demographic parity, equalised odds</div></div>
+        <div class="tc"><div class="tc-name" style="color:var(--gold)">BigQuery</div><div class="tc-desc">3,247 farmer records analysed at scale</div></div>
+        <div class="tc"><div class="tc-name" style="color:var(--grn)">Firebase</div><div class="tc-desc">Real-time audit history, farmer notifications</div></div>
+        <div class="tc"><div class="tc-name" style="color:var(--red)">Cloud Run</div><div class="tc-desc">Python fairness engine — Fairlearn + AIF360</div></div>
+        <div class="tc"><div class="tc-name" style="color:var(--blu)">Flutter</div><div class="tc-desc">Cross-platform app — web, Android, iOS</div></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* cursor */
+const C=document.getElementById('C'),CR=document.getElementById('CR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;C.style.left=mx+'px';C.style.top=my+'px'});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;CR.style.left=rx+'px';CR.style.top=ry+'px';requestAnimationFrame(a)})();
+document.querySelectorAll('button,a,.ni,.kc,.cd,.ic').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{C.classList.add('h');CR.classList.add('h')});
+  el.addEventListener('mouseleave',()=>{C.classList.remove('h');CR.classList.remove('h')});
+});
+
+/* nav */
+const TITLES={home:'Overview',audit:'Run Audit',explain:'Gemini Explain',fix:'Fix Bias',farmer:'Why My Score?',impact:'Impact'};
+function go(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  document.getElementById('n-'+id).classList.add('on');
+  document.getElementById('pgT').textContent=TITLES[id];
+  if(id==='home')animBars();
+  if(id==='impact')animCounters();
+}
+
+/* bias bars */
+function animBars(){
+  setTimeout(()=>{
+    document.getElementById('b1').style.width='71%';
+    document.getElementById('b2').style.width='78%';
+    document.getElementById('b3').style.width='82%';
+    document.getElementById('b4').style.width='87%';
+  },200);
+}
+animBars();
+
+/* audit */
+let running=false;
+const STEPS=['Loading 3,247 farmer records…','Computing Demographic Parity…','Computing Disparate Impact Ratio…','Analysing proxy features…','Generating Gemini report…'];
+const RESULT=`✓ Data loaded (3,247 farmers)
+✓ Demographic Parity — Gender: 0.71 ✗ FAIL
+✓ Demographic Parity — Rain-fed: 0.78 ⚠ BORDERLINE
+✓ Disparate Impact — Gender: 0.68 ✗ FAIL
+✓ Proxy feature found: Training Completion ↔ Gender
+
+KEY FINDING: "Training Completion" (18% weight) penalises women farmers who cannot access in-person sessions — not a skills gap but an access gap.
+
+→ Go to Fix Bias page to recalibrate →`;
+
+async function runAudit(){
+  if(running)return;running=true;
+  document.getElementById('runBtn').textContent='Running…';
+  const out=document.getElementById('audit-out');
+  out.textContent='';
+  for(let i=0;i<STEPS.length;i++){
+    out.textContent+=STEPS[i]+'\n';
+    document.querySelectorAll('.ps')[Math.min(i+1,4)].classList.add('act');
+    if(i>0)document.querySelectorAll('.ps')[i].classList.replace('act','done');
+    await sleep(800);
+    out.textContent=out.textContent.replace(STEPS[i]+'\n','✓ '+STEPS[i].replace('…','')+'\n');
+  }
+  document.querySelectorAll('.ps').forEach(s=>s.classList.add('done'));
+  out.textContent+='\n'+RESULT;
+  document.getElementById('runBtn').textContent='▶ Run Again';
+  running=false;
+}
+function resetAudit(){
+  running=false;
+  document.getElementById('audit-out').textContent='Configure above then click Run Audit.';
+  document.getElementById('runBtn').textContent='▶ Run Audit';
+  document.querySelectorAll('.ps').forEach((s,i)=>{s.classList.remove('done','act');if(i===0)s.classList.add('done');if(i===1)s.classList.add('act')});
+}
+
+/* gemini texts */
+const GEM={
+  '1explain':`AgriScore™ gives women farmers significantly lower scores — even when their land, crops, and payment history are identical to men.\n\nThe main driver is the Training Completion criterion (18% weight). Women complete only 28% of sessions vs 79% for men. But this isn't disengagement — 94% of women farmers live 8km+ from training venues with no independent transport.\n\nThis is disparate impact: a neutral-looking rule that systematically disadvantages a protected group. The fix isn't lower standards — it's accessible training.`,
+  '1fix':`1. Add app-based training (Kannada audio, 15 mins each)\n   → Women with smartphones complete from home\n   → Expected DPR improvement: 0.71 → 0.83\n\n2. Reduce Training weight from 18% → 10%\n   → Redistribute to Payment History + Land Care\n   → Immediate DPR improvement to ~0.84\n\n3. Long-term: bring training camps to villages via SHG networks`,
+  '1farmer':`Namaskara! Your score is 498 — but two things are pulling it down that are NOT your fault.\n\n1. Training sessions are held in Tumkur town. It's hard to travel there. We are putting all training on this app in Kannada audio. Complete 3 modules from home — your score will go up by 18 points.\n\n2. Last year's monsoon in your area was 22% below normal. We are adjusting your Yield score for this. You will automatically get 12 more points next month.\n\nWith these two changes, your score should reach 628+.`,
+  '2explain':`Rain-fed farmers face a structural penalty in how AgriScore™ measures Yield Consistency and Soil Care.\n\nFarmers without irrigation cannot control rainfall — so their yields are naturally more variable. A borewell farmer can hit consistent numbers regardless of monsoon. A rainfed farmer in a drought year cannot.\n\nThe system currently treats a 70% yield in a drought year the same as 70% in a normal year. This disadvantages 31% of our farmers.\n\nFix: compare each farmer's yield against rainfall-adjusted expectations using IMD district data.`,
+  '2fix':`1. Rainfall Normalisation\n   → Integrate IMD district rainfall API\n   → Score = actual yield ÷ (expected yield × rainfall factor)\n   → Expected DPR improvement: 0.78 → 0.87\n\n2. Irrigation Flag\n   → Mark irrigation type as context, not a scoring criterion\n   → Prevents capital access from affecting fairness metrics\n\n3. Drought Protection Protocol\n   → In declared drought districts, lock score at prior-year floor automatically`,
+  'custom_training':`Women farmers miss training most due to three barriers:\n\n1. Distance — 68% of sessions are in district capitals, 2-4 hr round trip\n2. Timing — 71% of sessions during peak farm hours (9am-2pm)\n3. Language — only 40% of materials available in Kannada audio\n\nWhatsApp-based audio training in Kannada eliminates all three simultaneously.`,
+  'custom_rainfall':`Rainfall dependency creates three AgriScore™ disadvantages:\n\n1. Yield Consistency (22% weight) — higher variance in rain-fed farms, not from poor practice\n2. Soil Care (15% weight) — rainfed soils dry out despite good management\n3. Limited crop diversity for rain-dependent farms\n\nAll three are corrected by normalising against IMD district rainfall data.`,
+  'custom_debiasing':`Top three strategies for Indian agricultural AI:\n\n1. Contextual reweighting — treat online training = in-person training\n2. Environmental normalisation — compare against rainfall-adjusted baselines\n3. Access auditing — before penalising any metric, verify equal access existed\n\nStrategy 3 is most broadly applicable for rural India contexts.`
+};
+
+function explain(n,type){
+  const el=document.getElementById('g'+n);
+  const key=n+type;
+  typing(el,GEM[key]||'Generating explanation…');
+}
+function setQ(q){document.getElementById('qInput').value=q}
+async function customQ(){
+  const q=document.getElementById('qInput').value.toLowerCase();
+  const el=document.getElementById('gCustom');
+  el.innerHTML='<div class="gem-think"><div class="dots"><span></span><span></span><span></span></div> Gemini is thinking…</div>';
+  await sleep(1100);
+  const key=q.includes('train')?'custom_training':q.includes('rain')?'custom_rainfall':'custom_debiasing';
+  typing(el,GEM[key]);
+}
+
+function farmerX(lang){
+  const el=document.getElementById('fExplain');
+  if(lang==='en')typing(el,GEM['1farmer']);
+  else if(lang==='kn')typing(el,'ನಮಸ್ಕಾರ! ನಿಮ್ಮ score 498 ಯಾಕೆ ಅಂತ ನಾವು ನೋಡಿದ್ದೇವೆ.\n\nನೀವು ಸಮಯಕ್ಕೆ ಸರಿಯಾಗಿ ಹಣ ಕಟ್ಟುತ್ತೀರಿ (92%) — ಇದು ತುಂಬಾ ಒಳ್ಳೆಯದು.\n\nScore ಕಡಿಮೆ ಇರಲು ಎರಡು ಕಾರಣ — ಎರಡೂ ನಿಮ್ಮ ತಪ್ಪಲ್ಲ:\n\n1. ತರಬೇತಿ: ತುಮಕೂರಿಗೆ ಹೋಗಲು ಕಷ್ಟ ಅಂತ ನಮಗೆ ಗೊತ್ತು. ಈಗ app ನಲ್ಲೇ ಕನ್ನಡದಲ್ಲಿ ತರಬೇತಿ ಇದೆ. +18 ಅಂಕ.\n\n2. ಮಳೆ: ಕಳೆದ ವರ್ಷ ಮಳೆ ಕಡಿಮೆ ಆಯಿತು. ನಾವು score ಸರಿ ಮಾಡುತ್ತೇವೆ. +12 ಅಂಕ ಮುಂದಿನ ತಿಂಗಳು ಸೇರ್ಪಡೆ ಆಗುತ್ತದೆ.');
+  else typing(el,'नमस्कार! आपका score 498 क्यों है — हमने देखा।\n\nआप समय पर भुगतान करती हैं (92%) — यह बहुत अच्छा है।\n\nScore कम होने के दो कारण हैं — दोनों आपकी गलती नहीं:\n\n1. ट्रेनिंग: तुमकूर जाना मुश्किल है। अब Kannada audio में app पर training उपलब्ध है। +18 अंक मिलेंगे।\n\n2. बारिश: पिछले साल कम बारिश हुई। अगले महीने आपका Yield score ठीक होगा। +12 अंक अपने आप जुड़ेंगे।');
+}
+
+/* weights */
+function updateW(){
+  const ids=['w1','w2','w3','w4','w5','w6'];
+  let total=0;
+  ids.forEach((id,i)=>{
+    const v=parseInt(document.getElementById(id).value);
+    document.getElementById('wv'+(i+1)).textContent=v+'%';
+    total+=v;
+  });
+  document.getElementById('wtotal').textContent=total+'%';
+  document.getElementById('wtotal').style.color=Math.abs(total-100)<3?'var(--grn)':'var(--red)';
+  const tw=parseInt(document.getElementById('w5').value);
+  const dpr=Math.min(0.95,0.71+(18-tw)*0.008).toFixed(2);
+  const pass=parseFloat(dpr)>=0.80;
+  document.getElementById('afterNum').textContent=dpr;
+  document.getElementById('afterNum').style.color=pass?'var(--grn)':parseFloat(dpr)>0.74?'var(--amb)':'var(--red)';
+  document.getElementById('afterTag').textContent=pass?'PASS':'Improving';
+  document.getElementById('afterTag').className='tag '+(pass?'tg':parseFloat(dpr)>0.74?'ta':'tr');
+  document.getElementById('afterNote').textContent=pass?'Ready to apply!':'Lower Training weight more';
+  document.getElementById('afterCard').style.borderColor=pass?'var(--grn-bdr)':'var(--bdr)';
+}
+function applyFix(){
+  const tw=parseInt(document.getElementById('w5').value);
+  const dpr=Math.min(0.95,0.71+(18-tw)*0.008).toFixed(2);
+  if(parseFloat(dpr)>=0.80){
+    alert('✅ Recalibration applied!\n\nGender DPR: '+dpr+' (PASS)\nChanges saved to AgriScore™ v2.2\n\nNext audit will reflect updated weights.');
+  }else{
+    alert('⚠ DPR is '+dpr+' — still below 0.80 threshold.\nLower the Training Completion weight further.');
+  }
+}
+
+/* impact counters */
+function animCounters(){
+  countUp('ic1',742,1800);countUp('ic2',189,1400);countUp('ic3',840,2000);
+}
+function countUp(id,target,dur){
+  const el=document.getElementById(id);if(!el)return;
+  const start=performance.now();
+  (function f(t){
+    const p=Math.min((t-start)/dur,1),ease=1-Math.pow(1-p,4);
+    el.textContent=Math.round(ease*target).toLocaleString('en-IN');
+    if(p<1)requestAnimationFrame(f);
+  })(performance.now());
+}
+
+/* typing */
+async function typing(el,text){
+  el.textContent='';el.style.color='var(--muted2)';
+  for(let i=0;i<text.length;i+=4){
+    el.textContent+=text.slice(i,i+4);
+    await sleep(14);
+  }
+}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+</script>
+</body>
+</html>

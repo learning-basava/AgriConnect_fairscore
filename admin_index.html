@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriConnect — Admin Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0A0C0F;--surf:#10131A;--card:#161B24;--card2:#1C2230;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.13);
+  --gold:#C49B4A;--gold-l:#E8D5A0;--gold-d:#7A5E28;--gold-bdr:rgba(196,155,74,.3);
+  --acc:#9B8FD4;--acc-d:#4A3F7A;--acc-bdr:rgba(155,143,212,.28);--acc-glow:rgba(155,143,212,.09);
+  --green:#4CAF7D;--red:#E05A5A;--blue:#5B9BD5;
+  --cream:#F0EBE0;--m1:rgba(240,235,224,.38);--m2:rgba(240,235,224,.62);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--cream);min-height:100vh;display:flex;overflow-x:hidden;cursor:none}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.028'/%3E%3C/svg%3E");pointer-events:none;z-index:9990}
+#C{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s}
+#CR{width:30px;height:30px;border:1px solid rgba(196,155,74,.45);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s}
+#C.h{width:14px;height:14px}#CR.h{width:48px;height:48px;border-color:rgba(196,155,74,.8)}
+.sb{width:230px;background:var(--surf);border-right:1px solid var(--bdr);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
+.sb::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent)}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--cream)}
+.sb-logo svg{width:30px;height:30px;flex-shrink:0}
+.sb-lt{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600}
+.sb-ls{font-size:.57rem;color:var(--gold);letter-spacing:.13em;text-transform:uppercase;font-weight:600;margin-top:1px}
+.sb-user{padding:13px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+.sb-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--acc-d),var(--acc));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;border:1.5px solid var(--acc-bdr);flex-shrink:0}
+.sb-nm{font-size:.81rem;font-weight:600}.sb-rl{font-size:.62rem;color:var(--acc);font-weight:600;letter-spacing:.04em;margin-top:1px}
+.sb-sec{padding:16px 12px 4px;font-size:.56rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--m1)}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:8px;margin:1px 7px;cursor:pointer;transition:all .2s;font-size:.8rem;color:var(--m2);font-weight:500;border:1px solid transparent;background:transparent;width:calc(100% - 14px);text-align:left;font-family:'DM Sans',sans-serif;position:relative}
+.ni:hover{background:rgba(255,255,255,.04);color:var(--cream)}
+.ni.on{background:var(--acc-glow);color:var(--acc);border-color:var(--acc-bdr)}
+.ni.on::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:2px;border-radius:0 2px 2px 0;background:var(--acc)}
+.ni-ic{width:15px;text-align:center;flex-shrink:0}
+.ni-bd{margin-left:auto;background:rgba(155,143,212,.15);color:var(--acc);font-size:.56rem;padding:.1rem .38rem;border-radius:100px;font-weight:700}
+.sb-bot{margin-top:auto;padding:12px;border-top:1px solid var(--bdr)}
+.b-out{display:flex;align-items:center;justify-content:center;gap:7px;padding:8px;border-radius:8px;border:1px solid var(--bdr);background:transparent;color:var(--m2);font-size:.76rem;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif;transition:all .2s}
+.b-out:hover{border-color:var(--red);color:var(--red)}
+.main{margin-left:230px;flex:1;min-height:100vh}
+.topbar{padding:13px 24px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(10,12,15,.92);backdrop-filter:blur(20px);z-index:50}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-bdr),transparent)}
+.pg-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600}
+.pg-sub{font-size:.69rem;color:var(--m1);margin-top:2px}
+.live-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;color:var(--green);padding:.26rem .75rem;background:rgba(76,175,125,.08);border:1px solid rgba(76,175,125,.2);border-radius:100px}
+.live-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px rgba(76,175,125,.25);animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 2px rgba(76,175,125,.25)}50%{box-shadow:0 0 0 5px rgba(76,175,125,0)}}
+.pg{display:none;padding:20px;animation:fi .28s ease}.pg.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.kr{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.kc{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:16px 18px;transition:all .25s;position:relative;overflow:hidden}
+.kc::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent);opacity:0;transition:opacity .3s}
+.kc:hover{border-color:var(--gold-bdr);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.3)}.kc:hover::after{opacity:1}
+.kl{font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--m1);margin-bottom:6px}
+.kv{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;line-height:1}
+.kch{font-size:.69rem;margin-top:5px}.up{color:var(--green)}.dn{color:var(--red)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cd{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:18px;transition:border-color .25s}
+.cd:hover{border-color:rgba(255,255,255,.1)}
+.ct{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--m1);margin-bottom:11px;padding-bottom:8px;border-bottom:1px solid var(--bdr)}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.sh h3{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600}
+.tag{display:inline-block;font-size:.59rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.17rem .52rem;border-radius:100px}
+.tg{background:rgba(76,175,125,.1);color:var(--green);border:1px solid rgba(76,175,125,.2)}
+.ta{background:rgba(196,155,74,.1);color:var(--gold);border:1px solid rgba(196,155,74,.2)}
+.tr{background:rgba(224,90,90,.1);color:var(--red);border:1px solid rgba(224,90,90,.2)}
+.tbl2{background:rgba(91,155,213,.1);color:var(--blue);border:1px solid rgba(91,155,213,.2)}
+.tp{background:rgba(155,143,212,.1);color:var(--acc);border:1px solid rgba(155,143,212,.2)}
+.btn{padding:.4rem .95rem;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;border:none;display:inline-flex;align-items:center;gap:5px}
+.bg{background:var(--acc-d);color:var(--acc);border:1px solid var(--acc-bdr)}.bg:hover{background:var(--acc);color:var(--bg);transform:translateY(-1px)}
+.bo{background:transparent;color:var(--m2);border:1px solid var(--bdr)}.bo:hover{border-color:var(--gold-bdr);color:var(--gold)}
+.bgreen{background:rgba(76,175,125,.1);color:var(--green);border:1px solid rgba(76,175,125,.2)}.bgreen:hover{background:var(--green);color:var(--bg)}
+.bred{background:rgba(224,90,90,.08);color:var(--red);border:1px solid rgba(224,90,90,.2)}.bred:hover{background:var(--red);color:white}
+.tbl{width:100%;border-collapse:collapse;font-size:.8rem}
+.tbl th{text-align:left;padding:8px 10px;font-size:.61rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--m1);border-bottom:1px solid var(--bdr)}
+.tbl td{padding:10px 10px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--m2)}
+.tbl td:first-child{color:var(--cream);font-weight:500}
+.tbl tr:last-child td{border-bottom:none}.tbl tr:hover td{background:rgba(255,255,255,.02)}
+.act-item{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--bdr);font-size:.8rem}
+.act-item:last-child{border-bottom:none}
+.act-ic{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0}
+.mrow{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bdr);font-size:.8rem}
+.mrow:last-child{border-bottom:none}
+.mbar{flex:1;height:3px;background:var(--bdr);border-radius:2px;margin:0 10px}
+.mfil{height:100%;border-radius:2px;background:var(--acc)}
+.bc{display:flex;align-items:flex-end;gap:7px;height:100px;margin:8px 0}
+.bcc{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bcb{width:100%;border-radius:4px 4px 0 0;min-height:3px;transition:height .9s cubic-bezier(.23,1,.32,1)}
+.bcv{font-size:.59rem;color:var(--m2);font-weight:600}
+@media(max-width:900px){.sb{display:none}.main{margin-left:0}.kr{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="C"></div><div id="CR"></div>
+
+<aside class="sb">
+  <a href="../index.html" class="sb-logo">
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="9" fill="#1A2818"/><path d="M20 6 C20 6 10 13 10 22 C10 27.5 14.5 32 20 32 C25.5 32 30 27.5 30 22 C30 13 20 6 20 6Z" fill="#3D8B5E"/><path d="M20 12 C20 12 15 17 15 22 C15 24.8 17.2 27 20 27 C22.8 27 25 24.8 25 22 C25 17 20 12 20 12Z" fill="#7BC8A4"/><path d="M20 16 L20 32" stroke="#1A2818" stroke-width="1.5" stroke-linecap="round"/><path d="M20 21 L16.5 18" stroke="#1A2818" stroke-width="1.3" stroke-linecap="round"/><path d="M20 25 L23.5 22" stroke="#1A2818" stroke-width="1.3" stroke-linecap="round"/></svg>
+    <div><div class="sb-lt">AgriConnect</div><div class="sb-ls">Admin Panel</div></div>
+  </a>
+  <div class="sb-user">
+    <div class="sb-av" id="uAv">AC</div>
+    <div><div class="sb-nm" id="uNm">Admin Panel</div><div class="sb-rl">Super Admin</div></div>
+  </div>
+  <div class="sb-sec">Overview</div>
+  <button type="button" class="ni on" id="n-dashboard" onclick="go('dashboard')"><span class="ni-ic">⌂</span>Dashboard</button>
+  <button type="button" class="ni" id="n-analytics" onclick="go('analytics')"><span class="ni-ic">◎</span>Analytics</button>
+  <div class="sb-sec">Operations</div>
+  <button type="button" class="ni" id="n-farmers" onclick="go('farmers')"><span class="ni-ic">🌾</span>Farmers<span class="ni-bd">3,247</span></button>
+  <button type="button" class="ni" id="n-landlords" onclick="go('landlords')"><span class="ni-ic">🏡</span>Landlords<span class="ni-bd">412</span></button>
+  <button type="button" class="ni" id="n-lands" onclick="go('lands')"><span class="ni-ic">◫</span>Land Listings</button>
+  <button type="button" class="ni" id="n-approvals" onclick="go('approvals')"><span class="ni-ic">✓</span>Approvals<span class="ni-bd">8</span></button>
+  <div class="sb-sec">Finance</div>
+  <button type="button" class="ni" id="n-revenue" onclick="go('revenue')"><span class="ni-ic">◉</span>Revenue</button>
+  <button type="button" class="ni" id="n-payouts" onclick="go('payouts')"><span class="ni-ic">◈</span>Payouts</button>
+  <div class="sb-bot">
+    <button type="button" class="b-out" onclick="logout()">↩ Sign Out</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div><div class="pg-title" id="pgT">Platform Overview</div><div class="pg-sub">Saturday, 25 April 2025</div></div>
+    <div class="live-pill">Live Operations</div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="pg on" id="pg-dashboard">
+    <div class="kr">
+      <div class="kc"><div class="kl">Total Farmers</div><div class="kv">3,247</div><div class="kch up">↑ 142 this month</div></div>
+      <div class="kc"><div class="kl">Active Land (acres)</div><div class="kv">1,840</div><div class="kch up">↑ 85 this week</div></div>
+      <div class="kc"><div class="kl">Monthly Revenue</div><div class="kv" style="color:var(--acc)">₹18.4L</div><div class="kch up">↑ 24% MoM</div></div>
+      <div class="kc"><div class="kl">Pending Approvals</div><div class="kv" style="color:var(--gold)">8</div><div class="kch dn">Needs attention</div></div>
+    </div>
+    <div class="g2" style="margin-bottom:12px">
+      <div class="cd"><div class="ct">Platform Activity — Last 7 Days</div>
+        <div class="act-item"><div class="act-ic" style="background:rgba(76,175,125,.12)">🌾</div><div><span style="font-weight:600">Raju Gowda</span> completed Level 2 training<br><span style="font-size:.72rem;color:var(--m1)">2 hours ago</span></div></div>
+        <div class="act-item"><div class="act-ic" style="background:rgba(196,155,74,.12)">🏡</div><div><span style="font-weight:600">Vikram Rao</span> submitted 3 land documents<br><span style="font-size:.72rem;color:var(--m1)">5 hours ago</span></div></div>
+        <div class="act-item"><div class="act-ic" style="background:rgba(155,143,212,.12)">📋</div><div>Lease agreement auto-generated — Tumkur Plot<br><span style="font-size:.72rem;color:var(--m1)">Yesterday</span></div></div>
+        <div class="act-item"><div class="act-ic" style="background:rgba(91,155,213,.12)">🛡️</div><div>PMFBY claim filed — Kolar Farm · ₹42,000<br><span style="font-size:.72rem;color:var(--m1)">2 days ago</span></div></div>
+        <div class="act-item"><div class="act-ic" style="background:rgba(76,175,125,.12)">📦</div><div>Marketplace delivery — 24 orders · ₹18,400<br><span style="font-size:.72rem;color:var(--m1)">3 days ago</span></div></div>
+      </div>
+      <div class="cd"><div class="ct">Revenue Breakdown</div>
+        <div class="mrow"><span style="color:var(--m2)">Land Leasing (8–12%)</span><div class="mbar"><div class="mfil" style="width:42%"></div></div><span style="color:var(--acc)">₹7.7L</span></div>
+        <div class="mrow"><span style="color:var(--m2)">Marketplace (15–18%)</span><div class="mbar"><div class="mfil" style="width:33%"></div></div><span style="color:var(--acc)">₹6.1L</span></div>
+        <div class="mrow"><span style="color:var(--m2)">Agri Partnership (20%)</span><div class="mbar"><div class="mfil" style="width:25%"></div></div><span style="color:var(--acc)">₹4.6L</span></div>
+        <div style="border-top:1px solid var(--bdr);padding-top:10px;margin-top:4px;display:flex;justify-content:space-between;font-size:.84rem;font-weight:700"><span>Total Platform Revenue</span><span style="color:var(--green)">₹18.4L</span></div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="cd"><div class="ct">Pending Approvals Summary</div>
+        <table class="tbl"><tr><th>Type</th><th>Count</th><th>Oldest</th></tr>
+          <tr><td>Land Document Verification</td><td><span class="tag ta">3</span></td><td>2 days</td></tr>
+          <tr><td>Farmer Onboarding</td><td><span class="tag ta">2</span></td><td>1 day</td></tr>
+          <tr><td>Insurance Claims</td><td><span class="tag tr">1</span></td><td>5 days</td></tr>
+          <tr><td>Lease Agreements</td><td><span class="tag tbl2">2</span></td><td>3 hours</td></tr>
+        </table>
+        <button type="button" class="btn bg" style="margin-top:11px" onclick="go('approvals')">Review All →</button>
+      </div>
+      <div class="cd"><div class="ct">Geographic Coverage</div>
+        <table class="tbl"><tr><th>District</th><th>Farmers</th><th>Land (ac)</th><th>Revenue</th></tr>
+          <tr><td>Tumkur</td><td>1,240</td><td>680</td><td style="color:var(--green)">₹7.2L</td></tr>
+          <tr><td>Kolar</td><td>820</td><td>490</td><td style="color:var(--green)">₹5.4L</td></tr>
+          <tr><td>Ramanagara</td><td>640</td><td>380</td><td style="color:var(--green)">₹3.8L</td></tr>
+          <tr><td>Bengaluru Rural</td><td>320</td><td>180</td><td style="color:var(--green)">₹1.8L</td></tr>
+          <tr><td>Others</td><td>227</td><td>110</td><td style="color:var(--green)">₹1.2L</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div class="pg" id="pg-analytics">
+    <div class="kr">
+      <div class="kc"><div class="kl">YTD Revenue</div><div class="kv" style="color:var(--acc)">₹72L</div><div class="kch up">↑ 31% vs 2024</div></div>
+      <div class="kc"><div class="kl">Avg Farmer Income</div><div class="kv">₹18.4K</div><div class="kch up">↑ 68% vs pre-platform</div></div>
+      <div class="kc"><div class="kl">Land Utilization</div><div class="kv">94%</div><div class="kch up">Best-in-class</div></div>
+      <div class="kc"><div class="kl">Broker Interactions</div><div class="kv" style="color:var(--green)">0</div><div class="kch up">Zero brokers</div></div>
+    </div>
+    <div class="cd" style="margin-bottom:12px">
+      <div class="sh"><h3>Monthly Revenue Growth 2025</h3><button type="button" class="btn bo">Export</button></div>
+      <div class="bc" id="revChart"></div>
+      <div style="display:flex;justify-content:space-around;font-size:.65rem;color:var(--m1);margin-top:3px"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div>
+    </div>
+    <div class="g2">
+      <div class="cd"><div class="ct">Farmer Growth</div>
+        <table class="tbl"><tr><th>Metric</th><th>Value</th><th>Change</th></tr>
+          <tr><td>New farmers (Apr)</td><td>142</td><td style="color:var(--green)">↑ 18%</td></tr>
+          <tr><td>Churned farmers</td><td>4</td><td style="color:var(--green)">↓ 60%</td></tr>
+          <tr><td>Avg AgriScore</td><td>681</td><td style="color:var(--green)">↑ 22 pts</td></tr>
+          <tr><td>Score 700+ farmers</td><td>1,840</td><td style="color:var(--green)">↑ 14%</td></tr>
+          <tr><td>Training completion</td><td>74%</td><td style="color:var(--green)">↑ 8%</td></tr>
+        </table>
+      </div>
+      <div class="cd"><div class="ct">Marketplace Performance</div>
+        <table class="tbl"><tr><th>Metric</th><th>Value</th></tr>
+          <tr><td>Daily orders</td><td>284</td></tr>
+          <tr><td>Avg order value</td><td>₹640</td></tr>
+          <tr><td>Restaurant subscribers</td><td>47</td></tr>
+          <tr><td>Consumer NPS</td><td>72</td></tr>
+          <tr><td>vs wholesale mandi</td><td style="color:var(--green)">28% cheaper</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- FARMERS -->
+  <div class="pg" id="pg-farmers">
+    <div class="cd"><div class="sh"><h3>Farmer Registry</h3><div style="display:flex;gap:7px"><button type="button" class="btn bo">Export</button><button type="button" class="btn bg">+ Add Farmer</button></div></div>
+      <table class="tbl"><tr><th>Name</th><th>District</th><th>Leased Land</th><th>AgriScore</th><th>Income (Apr)</th><th>Status</th><th>Action</th></tr>
+        <tr><td>Raju Gowda</td><td>Tumkur</td><td>4.5 ac (3 plots)</td><td style="color:var(--green)">742</td><td>₹18,400</td><td><span class="tag tg">Active</span></td><td><button type="button" class="btn bo">View</button></td></tr>
+        <tr><td>Mani Reddy</td><td>Kolar</td><td>5 ac (1 plot)</td><td style="color:var(--green)">715</td><td>₹14,200</td><td><span class="tag tg">Active</span></td><td><button type="button" class="btn bo">View</button></td></tr>
+        <tr><td>Suresh Naidu</td><td>Ramanagara</td><td>—</td><td style="color:var(--gold)">712</td><td>—</td><td><span class="tag tbl2">Applied</span></td><td><button type="button" class="btn bo">View</button></td></tr>
+        <tr><td>Prema Kumar</td><td>Mysuru</td><td>—</td><td style="color:var(--gold)">685</td><td>—</td><td><span class="tag tbl2">Applied</span></td><td><button type="button" class="btn bo">View</button></td></tr>
+        <tr><td>Govinda Rao</td><td>Mandya</td><td>2.5 ac (1 plot)</td><td>648</td><td>₹8,600</td><td><span class="tag tg">Active</span></td><td><button type="button" class="btn bo">View</button></td></tr>
+      </table>
+      <p style="font-size:.73rem;color:var(--m1);margin-top:11px">Showing 5 of 3,247 farmers.</p>
+    </div>
+  </div>
+
+  <!-- LANDLORDS -->
+  <div class="pg" id="pg-landlords">
+    <div class="cd"><div class="sh"><h3>Landlord Registry</h3><button type="button" class="btn bg">+ Add Landlord</button></div>
+      <table class="tbl"><tr><th>Name</th><th>City</th><th>Lands Listed</th><th>Total Acres</th><th>Monthly Income</th><th>Status</th></tr>
+        <tr><td>Vikram Rao</td><td>Bengaluru</td><td>3</td><td>12.5 ac</td><td>₹28,400</td><td><span class="tag tg">Verified</span></td></tr>
+        <tr><td>Suresh Iyer</td><td>Bengaluru</td><td>2</td><td>6.5 ac</td><td>₹14,800</td><td><span class="tag tg">Verified</span></td></tr>
+        <tr><td>Anand Kumar</td><td>Mysuru</td><td>1</td><td>3 ac</td><td>₹6,400</td><td><span class="tag tg">Verified</span></td></tr>
+        <tr><td>Lakshmi Devi</td><td>Tumkur</td><td>1</td><td>1.5 ac</td><td>₹3,200</td><td><span class="tag ta">Docs Pending</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- LAND LISTINGS -->
+  <div class="pg" id="pg-lands">
+    <div class="cd"><div class="sh"><h3>All Land Listings</h3><button type="button" class="btn bo">Export</button></div>
+      <table class="tbl"><tr><th>Land</th><th>Owner</th><th>Location</th><th>Size</th><th>Soil</th><th>Rent/mo</th><th>Status</th><th>Docs</th></tr>
+        <tr><td>Tumkur Plot</td><td>Vikram Rao</td><td>Tumkur Taluk</td><td>4.5 ac</td><td>Red soil</td><td>₹13,778</td><td><span class="tag tg">Leased</span></td><td><span class="tag tg">✓ Clear</span></td></tr>
+        <tr><td>Kolar Farm</td><td>Vikram Rao</td><td>Kolar District</td><td>5 ac</td><td>Black soil</td><td>₹12,000</td><td><span class="tag tg">Leased</span></td><td><span class="tag tg">✓ Clear</span></td></tr>
+        <tr><td>Ramanagara Land</td><td>Vikram Rao</td><td>Ramanagara</td><td>3 ac</td><td>Loam</td><td>₹8,000 est</td><td><span class="tag ta">Seeking</span></td><td><span class="tag ta">Pending</span></td></tr>
+        <tr><td>Suresh Plot</td><td>Suresh Iyer</td><td>Kolar</td><td>3 ac</td><td>Red soil</td><td>₹7,200</td><td><span class="tag tg">Leased</span></td><td><span class="tag tg">✓ Clear</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- APPROVALS -->
+  <div class="pg" id="pg-approvals">
+    <div class="cd"><div class="sh"><h3>Pending Approvals (8)</h3></div>
+      <table class="tbl"><tr><th>Type</th><th>Name</th><th>Detail</th><th>Submitted</th><th>Priority</th><th>Actions</th></tr>
+        <tr><td>🌾 Farmer Onboarding</td><td>Suresh Naidu</td><td>Ramanagara · Score 712</td><td>Apr 22</td><td><span class="tag ta">Medium</span></td><td><div style="display:flex;gap:4px"><button type="button" class="btn bgreen">Approve</button><button type="button" class="btn bo">View</button><button type="button" class="btn bred">Decline</button></div></td></tr>
+        <tr><td>🌾 Farmer Onboarding</td><td>Prema Kumar</td><td>Mysuru · Score 685</td><td>Apr 23</td><td><span class="tag tbl2">Low</span></td><td><div style="display:flex;gap:4px"><button type="button" class="btn bgreen">Approve</button><button type="button" class="btn bo">View</button><button type="button" class="btn bred">Decline</button></div></td></tr>
+        <tr><td>📄 Land Documents</td><td>Vikram Rao</td><td>Ramanagara RTC · 3 ac</td><td>Apr 20</td><td><span class="tag ta">Medium</span></td><td><div style="display:flex;gap:4px"><button type="button" class="btn bgreen">Verify</button><button type="button" class="btn bo">View Docs</button></div></td></tr>
+        <tr><td>📄 Land Documents</td><td>Lakshmi Devi</td><td>Tumkur orchard · 1.5 ac</td><td>Apr 18</td><td><span class="tag ta">Medium</span></td><td><div style="display:flex;gap:4px"><button type="button" class="btn bgreen">Verify</button><button type="button" class="btn bo">View Docs</button></div></td></tr>
+        <tr><td>🛡️ Insurance Claim</td><td>Raju Gowda</td><td>Flood · Plot B · ₹42,000</td><td>Apr 19</td><td><span class="tag tr">High</span></td><td><div style="display:flex;gap:4px"><button type="button" class="btn bgreen">Approve</button><button type="button" class="btn bo">Satellite Data</button></div></td></tr>
+        <tr><td>📋 Lease Agreement</td><td>Suresh Naidu</td><td>Ramanagara · 1 year</td><td>Apr 24</td><td><span class="tag tbl2">Low</span></td><td><div style="display:flex;gap:4px"><button type="button" class="btn bg">Generate</button><button type="button" class="btn bo">Review</button></div></td></tr>
+        <tr><td>📋 Lease Agreement</td><td>Prema Kumar</td><td>Ramanagara · 6 months</td><td>Apr 24</td><td><span class="tag tbl2">Low</span></td><td><div style="display:flex;gap:4px"><button type="button" class="btn bg">Generate</button><button type="button" class="btn bo">Review</button></div></td></tr>
+        <tr><td>🏦 Payout Request</td><td>Vikram Rao</td><td>April rent · 2 lands · ₹23,200</td><td>Apr 15</td><td><span class="tag tr">High</span></td><td><div style="display:flex;gap:4px"><button type="button" class="btn bgreen">Release</button><button type="button" class="btn bo">View</button></div></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- REVENUE -->
+  <div class="pg" id="pg-revenue">
+    <div class="kr">
+      <div class="kc"><div class="kl">YTD Revenue</div><div class="kv" style="color:var(--acc)">₹72L</div><div class="kch up">↑ 31% vs 2024</div></div>
+      <div class="kc"><div class="kl">This Month</div><div class="kv">₹18.4L</div><div class="kch up">↑ 24% vs Mar</div></div>
+      <div class="kc"><div class="kl">Projected Annual</div><div class="kv">₹2.2Cr</div><div class="kch up">On track</div></div>
+      <div class="kc"><div class="kl">Net Margin</div><div class="kv" style="color:var(--green)">42%</div><div class="kch up">↑ 6pts</div></div>
+    </div>
+    <div class="cd"><div class="ct">Revenue by Pillar</div>
+      <table class="tbl"><tr><th>Pillar</th><th>Commission</th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>Total YTD</th></tr>
+        <tr><td>Land Leasing</td><td>8–12%</td><td>₹5.2L</td><td>₹5.8L</td><td>₹7.2L</td><td>₹7.7L</td><td style="color:var(--acc)">₹25.9L</td></tr>
+        <tr><td>Marketplace</td><td>15–18%</td><td>₹3.8L</td><td>₹4.2L</td><td>₹5.4L</td><td>₹6.1L</td><td style="color:var(--acc)">₹19.5L</td></tr>
+        <tr><td>Agri Partnership</td><td>20%</td><td>₹3.2L</td><td>₹3.6L</td><td>₹4.2L</td><td>₹4.6L</td><td style="color:var(--acc)">₹15.6L</td></tr>
+        <tr><td style="font-weight:700">Total</td><td></td><td>₹12.2L</td><td>₹13.6L</td><td>₹16.8L</td><td>₹18.4L</td><td style="color:var(--green);font-weight:700">₹61L</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- PAYOUTS -->
+  <div class="pg" id="pg-payouts">
+    <div class="cd"><div class="sh"><h3>Pending Payouts</h3><button type="button" class="btn bo">Export</button></div>
+      <table class="tbl"><tr><th>Recipient</th><th>Type</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Action</th></tr>
+        <tr><td>Vikram Rao</td><td>Landlord Rent — April</td><td>₹23,200</td><td>Apr 15</td><td><span class="tag tr">Overdue</span></td><td><button type="button" class="btn bgreen">Release Now</button></td></tr>
+        <tr><td>Raju Gowda</td><td>Crop Sale Payout</td><td>₹8,200</td><td>May 1</td><td><span class="tag ta">Pending</span></td><td><button type="button" class="btn bo">Schedule</button></td></tr>
+        <tr><td>Mani Reddy</td><td>Crop Sale Payout</td><td>₹6,400</td><td>May 1</td><td><span class="tag ta">Pending</span></td><td><button type="button" class="btn bo">Schedule</button></td></tr>
+        <tr><td>Govinda Rao</td><td>Crop Sale Payout</td><td>₹3,200</td><td>May 3</td><td><span class="tag tbl2">Scheduled</span></td><td><button type="button" class="btn bo">View</button></td></tr>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script>
+const u=JSON.parse(sessionStorage.getItem('ac_user')||'null');
+if(u&&u.name){document.getElementById('uNm').textContent=u.name;document.getElementById('uAv').textContent=u.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+const C=document.getElementById('C'),CR=document.getElementById('CR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;C.style.left=mx+'px';C.style.top=my+'px'});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;CR.style.left=rx+'px';CR.style.top=ry+'px';requestAnimationFrame(a)})();
+document.querySelectorAll('button,.kc,.cd').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{C.classList.add('h');CR.classList.add('h')});
+  el.addEventListener('mouseleave',()=>{C.classList.remove('h');CR.classList.remove('h')});
+});
+const TITLES={dashboard:'Platform Overview',analytics:'Analytics',farmers:'Farmer Registry',landlords:'Landlord Registry',lands:'Land Listings',approvals:'Pending Approvals',revenue:'Revenue',payouts:'Payouts'};
+function go(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  document.getElementById('n-'+id).classList.add('on');
+  document.getElementById('pgT').textContent=TITLES[id]||id;
+  if(id==='analytics')drawRC();
+}
+function logout(){sessionStorage.clear();window.location.href='../index.html'}
+function drawRC(){
+  const w=document.getElementById('revChart');if(!w)return;
+  const data=[1220000,1360000,1680000,1840000,0,0],mx=Math.max(...data);w.innerHTML='';
+  data.forEach((v,i)=>{
+    const col=document.createElement('div');col.className='bcc';
+    const bar=document.createElement('div');bar.className='bcb';
+    bar.style.background=i===3?'var(--acc)':'rgba(155,143,212,.2)';bar.style.height='3px';
+    const lbl=document.createElement('div');lbl.className='bcv';lbl.textContent=v?'₹'+Math.round(v/100000)+'L':'';
+    col.appendChild(bar);col.appendChild(lbl);w.appendChild(col);
+    setTimeout(()=>{bar.style.height=v?Math.round(v/mx*100)+'%':'3px'},80+i*60);
+  });
+}
+</script>
+</body>
+</html>
